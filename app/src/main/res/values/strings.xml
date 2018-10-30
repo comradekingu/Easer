@@ -20,8 +20,8 @@
     <string name="title_edit_condition">Edit Condition</string>
     <string name="title_edit_profile">Edit Profile</string>
     <string name="title_select_operation">Select an Operation</string>
-    <string name="title_dynamics_link">Dynamics Link</string>
-    <string name="title_new_dynamics_link">New Dynamics Link</string>
+    <string name="title_dynamics_link">Dynamic Link</string>
+    <string name="title_new_dynamics_link">New Dynamic Link</string>
     <string name="title_trigger_profile">Trigger this Profile</string>
 
     <string name="title_remote_operation_plugin">Remote Operation Plugin</string>
@@ -56,7 +56,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
 
-    <string name="text_lack_permission">Easer does NOT have all permissions it needs.</string>
+    <string name="text_lack_permission">Easer does NOT have all the permissions it needs.</string>
     <string name="button_request_permission">Grant permissions</string>
 
     <string name="text_title">Title</string>
@@ -81,14 +81,14 @@
     <string name="hint_profile_title">profile title</string>
     <string name="hint_condition_title">condition title</string>
 
-    <string name="prompt_save_failed">Failed to save</string>
-    <string name="prompt_delete">Are you sure to delete: %s?</string>
-    <string name="prompt_delete_failed">Failed to delete. Check if this item is being used.</string>
+    <string name="prompt_save_failed">Could not save</string>
+    <string name="prompt_delete">Are you sure you want to delete: %s?</string>
+    <string name="prompt_delete_failed">Could not delete. Check whether this item is being used.</string>
     <string name="prompt_data_illegal">Prevented saving data with invalid field(s). Please recheck your choices / inputs.</string>
 
     <string name="prompt_prevented_for_permission">Easer needs permission &lt;%s&gt; for this function.</string>
 
-    <string name="appInformation">Ease your life by automatically performing routine actions / operations on your phone(s).\n
+    <string name="appInformation">Ease your life by automatically performing routine actions / operations on your device(s).\n
 Chain different events and let their corresponding actions performed. No longer need to keep them in mind!\n
 This app was inspired by CyanogenMod\'s \'profile\' mechanism and IFTTT. The original intuition was to automatically change the profile on certain time or specific WiFi connections, and it was expanded for more general use then.\n
 Reminder: Easer is still in development. It may contain bugs and the UI definitely needs to be improved. Current plans are described in the TODO.en.md (or TODO.md if you can read Chinese) document in the repo. If you are interested, please have a look.</string>
@@ -133,8 +133,8 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="cooldown_time_illformed">The number must not be lower than 0 and not too large to fit in a integer</string>
 
     <string name="pref_passive_mode_title">Passive mode</string>
-    <string name="pref_passive_mode_summary_on">Listen to Event; no checking when activated</string>
-    <string name="pref_passive_mode_summary_off">Check the satisfaction state when (each) Event is activated</string>
+    <string name="pref_passive_mode_summary_on">Listen to event; no checking when activated</string>
+    <string name="pref_passive_mode_summary_off">Check the satisfaction state when (each) event is activated</string>
 
     <string name="pref_enabled_plugins_title">Enabled plugins</string>
     <string name="pref_enabled_plugins_summary">Enable or disable certain plugins</string>
@@ -142,9 +142,9 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="pref_use_12_hour_clock_title">Use 12-hour clock</string>
 
     <string name="pref_export_title">Export</string>
-    <string name="pref_export_summary">Export all events and profiles to SD Card.\nFile will be named after current time.</string>
+    <string name="pref_export_summary">Export all events and profiles to SD card.\nThe File will be named by current timestamp.</string>
     <string name="pref_import_title">Import</string>
-    <string name="pref_import_summary">Import all events and profiles in a zip file.\nExisting events and profiles with same name will be replaced.</string>
+    <string name="pref_import_summary">Import all events and profiles in a ZIP file.\nExisting events and profiles with same name will be replaced.</string>
 
     <string name="pref_convert_data_title">Convert data</string>
     <string name="pref_convert_data_summary">Convert all data to the recommended format</string>
@@ -165,7 +165,7 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
         \n\nAlso have a look at <a href="https://github.com/renyuneyun/Easer/wiki/FAQ">FAQ</a> in the project wiki.</string>
 
     <string name="alert_update_storage_data_title">Old data version found</string>
-    <string name="alert_update_storage_data">Your data were created in an older version. It\'s suggested to update them to new version or Easer may not work well. You can do this by selecting "Convert Data" in settings.</string>
+    <string name="alert_update_storage_data">Your data were created in an older version. It\'s suggested to update them to new version or Easer may not work well. You can do this by selecting \"Convert Data\" in the settings.</string>
 
     <string name="template_export">Exported to %s</string>
     <string name="version">Version</string>
@@ -178,10 +178,10 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="dynamics_profile_name">Profile Name</string>
 
     <string name="title_help">Help</string>
-    <string name="help_script">Script is the logic containers. You will connect an Event or a Condition with a Profile in a Script, so that Easer knows to load/execute that Profile when that Event happens or the Condition is met.\nThere are also more advanced functions, e.g. reversed event.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
-    <string name="help_event">Event represents a short-time (instant) event on your phone or remotely.\nFor example, receiving a notification, or an NFC tag is scanned.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
-    <string name="help_condition">Condition represents a long-lasting (but usually not forever) condition on your phone or remotely.\nFor example, connected to WiFi, or Screen is Off.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
-    <string name="help_profile">Profile is a set of Operations. Each Operation represents a particular type of action.\nFor example, turn on Bluetooth, or send an SMS.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
+    <string name="help_script">Script is the logic containers. You will connect an event or a condition with a profile in a script, so that Easer knows to load/execute that profile when that event happens or the condition is met.\nThere are also more advanced functions, e.g. reversed events.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
+    <string name="help_event">Event represents a short-time (instant) event on your device or remotely.\nFor example, receiving a notification, or an NFC tag is scanned.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
+    <string name="help_condition">Condition represents a long-lasting (but usually not forever) condition on your device or remotely.\nFor example, upon connection Wi-Fi, or as the screen turns off.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
+    <string name="help_profile">\"Profile\" is a set of operations. Each operation represents a particular type of action.\nFor example, turn on Bluetooth, or send an SMS.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
 
     <string name="category_operation_android">Android</string>
     <string name="category_operation_system_config">System config</string>
