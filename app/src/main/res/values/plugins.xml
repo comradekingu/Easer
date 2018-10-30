@@ -6,7 +6,7 @@
     <string name="condition_event_leave">Leave</string>
 
 
-    <string name="condition_bluetooth_device">Connected bluetooth device</string>
+    <string name="condition_bluetooth_device">Connected Bluetooth device</string>
 
     <string name="condition_cell_location">@string/event_celllocation</string>
 
@@ -31,9 +31,9 @@
     <string name="event_time">Time</string>
     <string name="event_date">Date</string>
 
-    <string name="event_wificonn">WiFi Connection</string>
-    <string name="wificonn_select_dialog_title">Select WiFi AP</string>
-    <string name="wificonn_wait_for_result">Waiting for WiFi scan result</string>
+    <string name="event_wificonn">Wi-Fi Connection</string>
+    <string name="wificonn_select_dialog_title">Select Wi-Fi AP</string>
+    <string name="wificonn_wait_for_result">Awaiting Wi-Fi scan result</string>
 
     <string name="event_celllocation">Cell Location</string>
 
@@ -43,7 +43,7 @@
         <item>Discharging</item>
     </array>
 
-    <string name="event_day_of_week">Day of Week</string>
+    <string name="event_day_of_week">Day of the Week</string>
 
     <string name="event_bluetooth_device">Bluetooth Device Connected</string>
     <string name="ebtdevice_select_dialog_title">Select Bluetooth Device</string>
@@ -52,7 +52,7 @@
     <string name="event_connectivity">Connectivity Type</string>
     <array name="connectivity_type">
         <item>Not connected</item>
-        <item>WiFi</item>
+        <item>Wi-Fi</item>
         <item>Mobile</item>
         <item>Ethernet</item>
         <item>Bluetooth</item>
@@ -66,13 +66,13 @@
     <string name="indicator_when">When…</string>
     <string name="choice_start_of">Start of</string>
     <string name="choice_end_of">End of</string>
-    <string name="choice_any_event">Any Events</string>
+    <string name="choice_any_event">Any events</string>
 
     <string name="event_broadcast">Receive Broadcast</string>
     <string name="text_action">Action</string>
     <string name="text_category">Category</string>
 
-    <string name="event_sms">Receive Sms</string>
+    <string name="event_sms">Receive SMS</string>
     <string name="sender">Sender</string>
     <string name="content_contains">Content (contains…)</string>>
     <string name="ev_sms_dynamics_sender">SMS Sender</string>
@@ -100,12 +100,12 @@
     <string name="event_nfc_tag">NFC Tag</string>
     <string name="event_nfc_tag__button_detect">Detect Tag</string>
     <string name="event_nfc_tag__prompt_enable_nfc_first">You need to enable NFC first</string>
-    <string name="event_nfc_tag__prompt_wait_for_tag">Waiting for tag to be scanned…</string>
+    <string name="event_nfc_tag__prompt_wait_for_tag">Awaiting tag scanning…</string>
 
     <string name="event_headset">Headset</string>
     <string name="event_headset__headset_action">Headset Action</string>
-    <string name="event_headset__plug_in">Plug in</string>
-    <string name="event_headset__plug_out">Plug out</string>
+    <string name="event_headset__plug_in">Plugged in</string>
+    <string name="event_headset__plug_out">Plugged out</string>
     <string name="event_headset__plug_any">Any</string>
     <string name="event_headset__with_microphone">With microphone?</string>
     <string name="event_headset__microphone_true">Yes</string>
@@ -125,7 +125,7 @@
     <string name="ev_screen_unlocked">Unlocked</string>
 
 
-    <string name="operation_wifi">WiFi</string>
+    <string name="operation_wifi">Wi-Fi</string>
     <string name="operation_cellular">Mobile data</string>
     <string name="operation_bluetooth">Bluetooth</string>
     <string name="operation_rotation">Auto Rotation</string>
@@ -156,12 +156,12 @@
     <string name="ringer_mode_dnd_priority">Priority</string>
     <string name="ringer_mode_dnd_none">None</string>
     <string name="ringer_mode_dnd_alarms">Alarms</string>
-    <string name="ringing_items_in_do_not_disturb_mode">Ringing items in Do not Disturb mode</string>
+    <string name="ringing_items_in_do_not_disturb_mode">Ringing items in \"Do not Disturb\" mode</string>
     <string name="label_operation_ringer_mode_notification_listener_service">Silent Mode Switcher</string>
 
     <string name="operation_command">Run commands</string>
     <string name="operation_hotspot">Hotspot</string>
-    <string name="operation_synchronization">Account synchronization</string>
+    <string name="operation_synchronization">Account syncing</string>
 
     <string name="operation_network_transmission">Network transmission</string>
     <string name="o_nettrans_protocol">Protocol</string>
@@ -172,7 +172,7 @@
     <string name="o_nettrans_data">Data</string>
 
     <string name="operation_media_control">Media Control</string>
-    <string name="text_play_pause">Toogle Play/Pause</string>
+    <string name="text_play_pause">Toogle play/pause</string>
     <string name="text_play">Play</string>
     <string name="text_pause">Pause</string>
     <string name="text_previous">Previous</string>
