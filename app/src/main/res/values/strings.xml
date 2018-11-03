@@ -2,7 +2,7 @@
 <resources>
     <string name="easer">Easer</string>
     <string name="app_name">@string/easer</string>
-    <string name="drawer_tip">Ease your life!</string>
+    <string name="drawer_tip">Ease your life.</string>
     <string name="title_outline">Outline</string>
     <string name="title_operation">Operation</string>
     <string name="title_profile">Profile</string>
@@ -64,9 +64,9 @@
     <string name="text_parent">Parent</string>
     <string name="text_profile">Profile</string>
     <string name="text_predefined_event">Predefined Event</string>
-    <string name="text_inline_event">Inline Event</string>
+    <string name="text_inline_event">Integrated Event</string>
     <string name="text_use_condition">Use Condition</string>
-    <string name="text_repeatable_desc">Repeatable when satisfied</string>
+    <string name="text_repeatable_desc">Reoccuring</string>
     <string name="text_reverse_desc">Reverse Scenario</string>
     <string name="text_volatile">Volatile</string>
     <string name="text_persistent">Persistent</string>
@@ -76,22 +76,19 @@
 
     <string name="toggle_active">Active</string>
 
-    <string name="hint_event_title">event title</string>
-    <string name="hint_script_title">script title</string>
-    <string name="hint_profile_title">profile title</string>
-    <string name="hint_condition_title">condition title</string>
+    <string name="hint_event_title">Event title</string>
+    <string name="hint_script_title">Script title</string>
+    <string name="hint_profile_title">Profile title</string>
+    <string name="hint_condition_title">Condition title</string>
 
     <string name="prompt_save_failed">Could not save</string>
     <string name="prompt_delete">Are you sure you want to delete: %s?</string>
     <string name="prompt_delete_failed">Could not delete. Check whether this item is being used.</string>
     <string name="prompt_data_illegal">Prevented saving data with invalid field(s). Please recheck your choices / inputs.</string>
 
-    <string name="prompt_prevented_for_permission">Easer needs permission &lt;%s&gt; for this function.</string>
+    <string name="prompt_prevented_for_permission">Grant Easer &lt;%s&gt; access for this to work.</string>
 
-    <string name="appInformation">Ease your life by automatically performing routine actions / operations on your device(s).\n
-Chain different events and let their corresponding actions performed. No longer need to keep them in mind!\n
-This app was inspired by CyanogenMod\'s \'profile\' mechanism and IFTTT. The original intuition was to automatically change the profile on certain time or specific WiFi connections, and it was expanded for more general use then.\n
-Reminder: Easer is still in development. It may contain bugs and the UI definitely needs to be improved. Current plans are described in the TODO.en.md (or TODO.md if you can read Chinese) document in the repo. If you are interested, please have a look.</string>
+    <string name="appInformation">Ease your life by automating routine actions on your device(s).\nChain together events their corresponding actions.\nThis app was inspired by CyanogenMod\'s \'profile\' mechanism and IFTTT. The original intention was changing profile at a certain time or in specific Wi-Fi coverage, and is now for general use.\nEaser is still in development. Have a look in TODO.en.md (or TODO.md if you can read Chinese) on the repo to help out.</string>
 
     <string name="liscence_stringa">This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -114,8 +111,8 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="pref_category_personalise">Personalise</string>
     <string name="pref_category_data_manage">Manage data</string>
 
-    <string name="pref_autostart_title">Autostart on boot</string>
-    <string name="pref_autostart_summary">Start Easer background service automatically</string>
+    <string name="pref_autostart_title">Autostart</string>
+    <string name="pref_autostart_summary">Starts Easer in the background when the device is turned on.</string>
 
     <string name="pref_restart_after_upgrade_title">Start service after upgrade</string>
 
@@ -123,33 +120,33 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="pref_welcome_summary">Show welcome message on app startup</string>
 
     <string name="pref_logging_title">Enable external logging</string>
-    <string name="pref_logging_summary">Save logs to external storage devices (/sdcard/logger) to aid bug reports.\nChange of this setting will take effect from next time Easer starts.</string>
+    <string name="pref_logging_summary">Logs to external storage devices (/sdcard/logger) to aid bug reports.\nChanges take effect at next app start.</string>
 
     <string name="pref_use_root_title">Use root features</string>
-    <string name="pref_use_root_summary">Use root permission for specific functions (plugins), which may help resolve compatibility issue on some devices. Root permission won\'t be used elsewhere.</string>
+    <string name="pref_use_root_summary">Use root permission for specific functions (plugins) to help resolve compatibility issues on some devices.</string>
 
-    <string name="pref_cooldown_title">Cool down time</string>
-    <string name="pref_cooldown_summary">Minimal interval between two triggers of the same event</string>
-    <string name="cooldown_time_illformed">The number must not be lower than 0 and not too large to fit in a integer</string>
+    <string name="pref_cooldown_title">Event only once</string>
+    <string name="pref_cooldown_summary">Timeframe in seconds to treat two occurances as one event.</string>
+    <string name="cooldown_time_illformed">Your number is too high, or not a positive whole number.</string>
 
     <string name="pref_passive_mode_title">Passive mode</string>
-    <string name="pref_passive_mode_summary_on">Listen to event; no checking when activated</string>
-    <string name="pref_passive_mode_summary_off">Check the satisfaction state when (each) event is activated</string>
+    <string name="pref_passive_mode_summary_on">Don\'t trigger an active event again.</string>
+    <string name="pref_passive_mode_summary_off">Check if the event should be triggered again when (each) event is activated.</string>
 
-    <string name="pref_enabled_plugins_title">Enabled plugins</string>
-    <string name="pref_enabled_plugins_summary">Enable or disable certain plugins</string>
+    <string name="pref_enabled_plugins_title">Activated plugins</string>
+    <string name="pref_enabled_plugins_summary">Turn on or off certain plugins</string>
 
     <string name="pref_use_12_hour_clock_title">Use 12-hour clock</string>
 
     <string name="pref_export_title">Export</string>
-    <string name="pref_export_summary">Export all events and profiles to SD card.\nThe File will be named by current timestamp.</string>
+    <string name="pref_export_summary">Export all events and profiles to SD card.\nThe current time as of saving will be used as filename.</string>
     <string name="pref_import_title">Import</string>
-    <string name="pref_import_summary">Import all events and profiles in a ZIP file.\nExisting events and profiles with same name will be replaced.</string>
+    <string name="pref_import_summary">Import all events and profiles in a ZIP file.\nDuplicated event and profile names will be replaced.</string>
 
     <string name="pref_convert_data_title">Convert data</string>
     <string name="pref_convert_data_summary">Convert all data to the recommended format</string>
 
-    <string name="message_plugin_not_compatible">This plugin is not compatible with this device.</string>
+    <string name="message_plugin_not_compatible">This device can not run this plugin.</string>
 
     <string name="message_convert_data_start">Converting data.</string>
     <string name="message_convert_data_finish">Converted data.</string>
@@ -157,15 +154,11 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="message_convert_data_error">Error occurred when converting data. Please see the log for details.</string>
 
     <string name="title_welcome_message">Welcome</string>
-    <string name="welcome_message">Welcome to use Easer!
-        \nHope you like this app :)
-        \n\nPlease read these before starting:\n
-    1. Please grant Easer corresponding permissions before using relevant events and profiles.\n
-    2. Connecting events as <a href="https://en.wikipedia.org/wiki/Tree_structure">trees</a> is CURRENTLY the only way to compose events.
-        \n\nAlso have a look at <a href="https://github.com/renyuneyun/Easer/wiki/FAQ">FAQ</a> in the project wiki.</string>
+    <string name="welcome_message">1. Grant Easer corresponding permissions before using relevant events and profiles.\n2. Connecting events as <a href="https://en.wikipedia.org/wiki/Tree_structure">trees</a> is <i>currently</i> the only way to compose events.
+        \n\nAlso have a look in <a href="https://github.com/renyuneyun/Easer/wiki/FAQ">FAQ</a> section of the project wiki.</string>
 
     <string name="alert_update_storage_data_title">Old data version found</string>
-    <string name="alert_update_storage_data">Your data were created in an older version. It\'s suggested to update them to new version or Easer may not work well. You can do this by selecting \"Convert Data\" in the settings.</string>
+    <string name="alert_update_storage_data">Select \"Convert Data\" in the settings to update your data to the new format, for compatibility.</string>
 
     <string name="template_export">Exported to %s</string>
     <string name="version">Version</string>
@@ -178,8 +171,8 @@ Reminder: Easer is still in development. It may contain bugs and the UI definite
     <string name="dynamics_profile_name">Profile Name</string>
 
     <string name="title_help">Help</string>
-    <string name="help_script">Script is the logic containers. You will connect an event or a condition with a profile in a script, so that Easer knows to load/execute that profile when that event happens or the condition is met.\nThere are also more advanced functions, e.g. reversed events.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
-    <string name="help_event">Event represents a short-time (instant) event on your device or remotely.\nFor example, receiving a notification, or an NFC tag is scanned.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more information.</string>
+    <string name="help_script">Scripts are the logic containers. Connect an event or a condition with a profile in a script, so that Easer knows to load/execute that profile when the event occurs, or the condition is met.\nThere are also more advanced functions, e.g. reversed events.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
+    <string name="help_event">Events represent short-time (instant) occurances on your device, or remotely.\nFor example, receiving a notification, or an NFC tag is scanned.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
     <string name="help_condition">Condition represents a long-lasting (but usually not forever) condition on your device or remotely.\nFor example, upon connection Wi-Fi, or as the screen turns off.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
     <string name="help_profile">\"Profile\" is a set of operations. Each operation represents a particular type of action.\nFor example, turn on Bluetooth, or send an SMS.\nPlease refer to the <a href="https://github.com/renyuneyun/Easer/wiki">document</a> for more info.</string>
 
