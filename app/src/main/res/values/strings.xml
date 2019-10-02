@@ -64,7 +64,7 @@
     <string name="text_parent">Parent</string>
     <string name="text_profile">Profile</string>
     <string name="text_predefined_event">Predefined Event</string>
-    <string name="text_inline_event">Integrated Event</string>
+    <string name="text_inline_event">Inline Event</string>
     <string name="text_use_condition">Use Condition</string>
     <string name="text_repeatable_desc">Reoccuring</string>
     <string name="text_reverse_desc">Reverse Scenario</string>
