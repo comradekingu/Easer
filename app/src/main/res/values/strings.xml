@@ -146,7 +146,7 @@
     <string name="pref_convert_data_title">Convert data</string>
     <string name="pref_convert_data_summary">Convert all data to the recommended format</string>
 
-    <string name="message_plugin_not_compatible">This device can not run this plugin.</string>
+    <string name="message_plugin_not_compatible">Could not run this plugin.</string>
 
     <string name="message_convert_data_start">Converting data.</string>
     <string name="message_convert_data_finish">Converted data.</string>
