@@ -125,7 +125,7 @@
     <string name="pref_use_root_title">Use root features</string>
     <string name="pref_use_root_summary">Use root permission for specific functions (plugins) to help resolve compatibility issues on some devices.</string>
 
-    <string name="pref_cooldown_title">Event only once</string>
+    <string name="pref_cooldown_title">Event only once per</string>
     <string name="pref_cooldown_summary">Timeframe in seconds to treat two occurances as one event.</string>
     <string name="cooldown_time_illformed">Your number is too high, or not a positive whole number.</string>
 
