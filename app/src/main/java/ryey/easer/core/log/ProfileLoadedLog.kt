@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -46,7 +46,7 @@ class ProfileLoadedLog : BasicLog {
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        profileName = parcel.readString()
+        profileName = parcel.readString()!!
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -20,7 +20,7 @@
 package ryey.easer.core.log
 
 import android.os.Parcel
-import android.support.annotation.CallSuper
+import androidx.annotation.CallSuper
 import java.util.*
 
 abstract class BasicLog: ActivityLog {

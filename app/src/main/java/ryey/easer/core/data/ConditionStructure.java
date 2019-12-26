@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,10 +19,11 @@
 
 package ryey.easer.core.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import ryey.easer.Utils;
 import ryey.easer.commons.C;
-import ryey.easer.commons.local_plugin.conditionplugin.ConditionData;
+import ryey.easer.commons.local_skill.conditionskill.ConditionData;
 
 public final class ConditionStructure implements Named, Verifiable, WithCreatedVersion {
 
@@ -53,6 +54,10 @@ public final class ConditionStructure implements Named, Verifiable, WithCreatedV
 
     @Override
     public boolean isValid() {
+        if (Utils.isBlank(name))
+            return false;
+        if (!data.isValid())
+            return false;
         return true;
     }
 

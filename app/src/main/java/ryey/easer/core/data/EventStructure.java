@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,16 +19,18 @@
 
 package ryey.easer.core.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import ryey.easer.Utils;
 import ryey.easer.commons.C;
-import ryey.easer.commons.local_plugin.ValidData;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
+import ryey.easer.commons.local_skill.ValidData;
+import ryey.easer.commons.local_skill.eventskill.EventData;
 
 public class EventStructure implements Named, Verifiable, WithCreatedVersion {
     private final int createdVersion;
 
+    @Nullable
     private final String name;
     private EventData eventData;
 

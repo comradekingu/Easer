@@ -1,4 +1,5 @@
-Easer [![Build Status](https://travis-ci.org/renyuneyun/Easer.svg?branch=master)](https://travis-ci.org/renyuneyun/Easer) [![weblate](https://hosted.weblate.org/widgets/easer/-/svg-badge.svg)](https://hosted.weblate.org/engage/easer/?utm_source=widget) [![codecov](https://codecov.io/gh/renyuneyun/Easer/branch/master/graph/badge.svg)](https://codecov.io/gh/renyuneyun/Easer) [![matrix-chat](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#Easer:matrix.org)  [ ![Download](https://api.bintray.com/packages/renyuneyun/Android/Easer/images/download.svg) ](https://bintray.com/renyuneyun/Android/Easer/_latestVersion) 
+Easer [![Build Status](https://travis-ci.org/renyuneyun/Easer.svg?branch=master)](https://travis-ci.org/renyuneyun/Easer) [![weblate](https://hosted.weblate.org/widgets/easer/-/svg-badge.svg)](https://hosted.weblate.org/engage/easer/?utm_source=widget) [![codecov](https://codecov.io/gh/renyuneyun/Easer/branch/master/graph/badge.svg)](https://codecov.io/gh/renyuneyun/Easer) [ ![Download](https://api.bintray.com/packages/renyuneyun/Android/Easer/images/download.svg) ](https://bintray.com/renyuneyun/Android/Easer/_latestVersion)  
+[![matrix-chat](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#Easer:matrix.org) [![Backers on Open Collective](https://opencollective.com/Easer/backers/badge.svg)](Contributor.md)
 =======
 [<img src="https://f-droid.org/badge/get-it-on-zh-cn.png"
       alt="Get it on F-Droid"
@@ -15,9 +16,22 @@ See [README.en.md](README.en.md) for the English version.
 
 擴展Easer
 -----
-擴展Easer的功能非常簡單（並且在持續變得更簡單），只需要添加自己的Event或Operation即可。
+給Easer添加功能主要分爲三類：機制、技能以及遠程技能（插件）。
+
+其中機制是Easer的核心部分，需要對Easer代碼有較好理解；也歡迎對現有代碼進行優化（但不要過度優化）。
+對於多數情況下，所要做的是增加新Event、Condition和Operation，這通過增加新的技能或遠程技能（插件）實現。
+
+### 技能
+
+增加技能插件需要添加自己的Event、Condition或Operation至Easer代碼中的`commons`包下。有腳本以簡化該操作，並且現有插件均可作爲示例。
 
 詳細請參見[這個頁面](https://renyuneyun.github.io/Easer/zh/EXTEND)。
+
+### 遠程技能（插件）
+
+遠程技能是v0.7開始新增的功能，旨在通過獨立的軟件擴展Easer的功能。每個遠程技能是一個獨立的app；理論上也可以在一個app中包含多個遠程技能。注意該功能較新，接口暫不穩定（但應該不會大改）。
+
+暫時遠程技能僅有Operation，[該倉庫](https://github.com/renyuneyun/EaserOperationPluginExample)是一個示例。
 
 
 支持Easer
@@ -28,7 +42,7 @@ Easer的翻譯工作託管在[Hosted Weblate](https://hosted.weblate.org/project
 十分歡迎有志者幫助翻譯工作，聚沙成塔集腋成裘。
 如無特別說明，翻譯文本將使用[CC-0](https://creativecommons.org/choose/zero/)協議，這意味着它們會進入[公有領域](https://en.wikipedia.org/wiki/Public_domain)；如果希望使用其他協議，請事先聯繫我們。
 
-另請注意，由於Easer作者的個人偏好，中文主體取傳統漢字作爲模字，不取大陸所爲簡化字也不取臺灣所爲正體字。凡涉及翻譯自外文等情況導致地區用語不一致時，模字以大陸版爲主。（計劃後續加入基於[OpenCC](https://github.com/BYVoid/OpenCC)的自動轉換，擬通過CI達成，只是暫時無此精力。歡迎有經驗或有興趣者協助。）
+另請注意，由於Easer作者的[個人偏好](https://blog.ryey.icu/you-dare-think-traditional-chinese-is-better.html)，中文主體取傳統漢字作爲模字，不取大陸所爲簡化字也不取臺灣所爲正體字。凡涉及翻譯自外文等情況導致地區用語不一致時，模字以大陸版爲主。（計劃後續加入基於[OpenCC](https://github.com/BYVoid/OpenCC)的自動轉換，擬通過CI達成，只是暫時無此精力。歡迎有經驗或有興趣者協助。）
 
 ### 提出、評論以及解決issue
 如果在使用Easer時發現了什麼問題，你可以[提出一個issue](https://github.com/renyuneyun/Easer/issues/new)。在可行的情況下（當然，這不是強制的），相關信息給得越多越好，以便更早定位問題所在。  
@@ -42,15 +56,44 @@ Easer的翻譯工作託管在[Hosted Weblate](https://hosted.weblate.org/project
 在某些情況下（如果你是一個開發者），你也許具有解決某些issue的能力。你可以fork本倉庫，編寫代碼，然後創建pull request。這樣，如果你的代碼的確解決了其問題，則你的代碼會進入主幹，他人均會受益於你的貢獻（並且你會被列在*Contributors*列表中）。  
 同樣歡迎對非現有issue創建pull request，但建議首先創建一個issue來描述你將要進行的工作（使得其他人意識到此事）。
 
+### 測試覆蓋
+測試實是重要。
+而Easer目前遠不及過分測試的程度——事實上，多數代碼並沒有相應的自動測試。
+
+如願意幫助貢獻測試代碼——尤其是對於核心部分（包括UI、數據後端以及服務）的測試——這裏實在感激不盡。
+
 ### 捐助
 
 如果您願意給Easer的開發提供任何額度的捐助，請參看[DONATE.md](https://renyuneyun.github.io/Easer/zh/DONATE)。
 
 感謝任何額度的支持。
 
+鳴謝
+------
+
+### 協助者
+
+Easer的開發離不開社區的幫助及捐贈。十分感謝各位。
+
+詳細列表請見[Contributor](Contributor.md)文檔。
+
+### 第三方
+
+* [Logger](https://github.com/orhanobut/logger): Apache License v2
+* [android-flowlayout](https://github.com/ApmeM/android-flowlayout): Apache License v2
+* [Guava](https://github.com/google/guava): Apache License v2
+* [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders): Apache License v2
+* [RecyclerTreeView](https://github.com/TellH/RecyclerTreeView): Apache License v2
+* [AppIntro](https://github.com/AppIntro/AppIntro): Apache License v2
+* [GraphView](https://github.com/Team-Blox/GraphView): Apache License v2
+* [locale-helper-android](https://github.com/zeugma-solutions/locale-helper-android): Apache License v2
+* [material-about-library](https://github.com/daniel-stoneuk/material-about-library): Apache License v2
+
+* 以`*-fa-*`命名的drawable文件均來自[fontawesome](https://fontawesome.com/): CC-BY 4.0
+
 版權協議
 -----
-Copyright (c) 2016 - 2018 Rui Zhao (renyuneyun) <renyuneyun@gmail.com>
+Copyright (c) 2016 - 2019 Rui Zhao (renyuneyun) <renyuneyun@gmail.com>
 
 除非額外說明，程序代碼以GPLv3+協議分發（參見LICENSE）
 
@@ -63,11 +106,3 @@ Easer的期望功能中包含大量對隱私信息（比如位置信息、日曆
 
 事實上，強制各衍生/擴展品爲**GPL**並不必要，因爲只需要它們**開源**即可。但GPL是（我）目前所知的唯一可以保證衍生/擴展品爲開源軟件的協議，所以選擇它。
 
-第三方
------
-* [Logger](https://github.com/orhanobut/logger): Apache License v2
-* [android-flowlayout](https://github.com/ApmeM/android-flowlayout): Apache License v2
-* [Guava](https://github.com/google/guava): Apache License v2
-* [StickyListHeaders](https://github.com/emilsjolander/StickyListHeaders): Apache License v2
-
-* 以`*-fa-*`命名的drawable文件均來自[fontawesome](https://fontawesome.com/): CC-BY 4.0

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,20 +19,25 @@
 
 package ryey.easer.core.data;
 
-import ryey.easer.commons.local_plugin.operationplugin.OperationData;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import ryey.easer.commons.local_skill.operationskill.OperationData;
 import ryey.easer.remote_plugin.RemoteOperationData;
 
 public class RemoteLocalOperationDataWrapper {
 
+    @Nullable
     public final OperationData localData;
+    @Nullable
     public final RemoteOperationData remoteData;
 
-    public RemoteLocalOperationDataWrapper(OperationData localData) {
+    public RemoteLocalOperationDataWrapper(@NonNull OperationData localData) {
         this.localData = localData;
         this.remoteData = null;
     }
 
-    public RemoteLocalOperationDataWrapper(RemoteOperationData remoteData) {
+    public RemoteLocalOperationDataWrapper(@NonNull RemoteOperationData remoteData) {
         this.remoteData = remoteData;
         this.localData = null;
     }

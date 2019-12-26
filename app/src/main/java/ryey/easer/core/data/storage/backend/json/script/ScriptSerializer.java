@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,13 +19,14 @@
 
 package ryey.easer.core.data.storage.backend.json.script;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
 
-import ryey.easer.commons.local_plugin.dynamics.DynamicsLink;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
+import ryey.easer.commons.local_skill.dynamics.DynamicsLink;
+import ryey.easer.commons.local_skill.eventskill.EventData;
 import ryey.easer.core.data.ConditionStructure;
 import ryey.easer.core.data.EventStructure;
 import ryey.easer.core.data.ScriptStructure;
@@ -33,7 +34,7 @@ import ryey.easer.core.data.storage.C;
 import ryey.easer.core.data.storage.backend.Serializer;
 import ryey.easer.core.data.storage.backend.UnableToSerializeException;
 import ryey.easer.plugin.PluginDataFormat;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.skills.LocalSkillRegistry;
 
 class ScriptSerializer implements Serializer<ScriptStructure> {
 
@@ -48,7 +49,12 @@ class ScriptSerializer implements Serializer<ScriptStructure> {
             jsonObject.put(C.VERSION, C.VERSION_CURRENT);
             jsonObject.put(C.ACTIVE, script.isActive());
             jsonObject.put(C.PROFILE, script.getProfileName());
-            jsonObject.put(C.AFTER, script.getParentName());
+            {
+                if (script.getPredecessors().size() > 0) {
+                    JSONArray predecessorArray = new JSONArray(script.getPredecessors());
+                    jsonObject.put(C.AFTER, predecessorArray);
+                }
+            }
 
             if (script.getEvent() != null) {
                 JSONObject trigger = serialize_scenario_trigger(script.getEvent());
@@ -103,7 +109,7 @@ class ScriptSerializer implements Serializer<ScriptStructure> {
 
     JSONObject serialize_situation(EventData event) throws JSONException {
         JSONObject json_situation = new JSONObject();
-        json_situation.put(C.SPEC, PluginRegistry.getInstance().event().findPlugin(event).id());
+        json_situation.put(C.SPEC, LocalSkillRegistry.getInstance().event().findSkill(event).id());
         json_situation.put(C.DATA, event.serialize(PluginDataFormat.JSON));
         return json_situation;
     }

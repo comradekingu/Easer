@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,51 +21,49 @@ package ryey.easer.core.data.storage;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import ryey.easer.commons.local_plugin.operationplugin.OperationData;
+import ryey.easer.commons.local_skill.operationskill.OperationData;
+import ryey.easer.core.data.LogicGraph;
 import ryey.easer.core.data.ProfileStructure;
 import ryey.easer.core.data.RemoteLocalOperationDataWrapper;
 import ryey.easer.core.data.ScriptStructure;
 import ryey.easer.core.data.ScriptTree;
 import ryey.easer.core.data.storage.backend.ScriptDataStorageBackendInterface;
 import ryey.easer.core.data.storage.backend.json.script.JsonScriptDataStorageBackend;
-import ryey.easer.plugins.operation.state_control.StateControlOperationData;
-import ryey.easer.plugins.operation.state_control.StateControlOperationPlugin;
+import ryey.easer.skills.operation.state_control.StateControlOperationData;
+import ryey.easer.skills.operation.state_control.StateControlOperationSkill;
 
 public class ScriptDataStorage extends AbstractDataStorage<ScriptStructure, ScriptDataStorageBackendInterface> {
 
-    private static ScriptDataStorage instance = null;
-
-    private final Context context;
-
-    public static ScriptDataStorage getInstance(Context context) {
-        if (instance == null) {
-            instance = new ScriptDataStorage(context);
-            instance.storage_backend_list = new ScriptDataStorageBackendInterface[] {
-                    JsonScriptDataStorageBackend.getInstance(context),
-            };
-        }
-        return instance;
-    }
-
-    private ScriptDataStorage(Context context) {
-        this.context = context;
+    public ScriptDataStorage(@NonNull Context context) {
+        super(context, new ScriptDataStorageBackendInterface[] {
+            new JsonScriptDataStorageBackend(context),
+        });
     }
 
     @Override
-    boolean isSafeToDelete(String name) {
+    boolean isSafeToDelete(@NonNull String name) {
         for (ScriptStructure scriptStructure : allScripts()) {
-            if (name.equals(scriptStructure.getParentName()))
+            if (scriptStructure.getPredecessors().contains(name))
                 return false;
         }
-        ProfileDataStorage profileDataStorage = ProfileDataStorage.getInstance(context);
-        String s_id = (new StateControlOperationPlugin()).id();
+        ProfileDataStorage profileDataStorage = new ProfileDataStorage(context);
+        String s_id = (new StateControlOperationSkill()).id();
         for (String pname : profileDataStorage.list()) {
-            ProfileStructure profile = profileDataStorage.get(pname);
+            ProfileStructure profile = null;
+            try {
+                profile = profileDataStorage.get(pname);
+            } catch (RequiredDataNotFoundException e) {
+                return true;
+            }
             Collection<RemoteLocalOperationDataWrapper> dataCollection = profile.get(s_id);
             if (dataCollection != null) {
                 for (RemoteLocalOperationDataWrapper dataWrapper : dataCollection) {
@@ -81,34 +79,40 @@ public class ScriptDataStorage extends AbstractDataStorage<ScriptStructure, Scri
         return true;
     }
 
+    @Deprecated
     public List<ScriptTree> getScriptTrees() {
-        return StorageHelper.eventListToTrees(allScripts());
+        return StorageHelper.logicGraphToTreeList(getLogicGraph());
     }
 
+    @NonNull
+    public LogicGraph getLogicGraph() {
+        return LogicGraph.createFromScriptList(allScripts());
+    }
+
+    @NonNull
     List<ScriptStructure> allScripts() {
-        List<ScriptStructure> list = null;
+        List<ScriptStructure> list = new LinkedList<>();
         for (ScriptDataStorageBackendInterface backend : storage_backend_list) {
-            if (list == null)
-                list = backend.all();
-            else
-                list.addAll(backend.all());
+            list.addAll(backend.all());
         }
         return list;
     }
 
     @Override
-    protected void handleRename(String oldName, ScriptStructure script) throws IOException {
+    protected void handleRename(@NonNull String oldName, @NonNull ScriptStructure script) throws IOException {
         String name = script.getName();
         // alter subnodes to point to the new name
-        List<ScriptStructure> subs = StorageHelper.scriptParentMap(allScripts()).get(oldName);
-        if (subs != null) {
-            for (ScriptStructure sub : subs) {
-                sub.setParentName(name);
-                update(sub);
+        List<ScriptStructure> successors = StorageHelper.scriptParentMap(allScripts()).get(oldName);
+        if (successors != null) {
+            for (ScriptStructure successor : successors) {
+                Set<String> predecessors = successor.getPredecessors();
+                predecessors.remove(oldName);
+                predecessors.add(name);
+                update(successor);
             }
         }
-        ProfileDataStorage profileDataStorage = ProfileDataStorage.getInstance(context);
-        String s_id = (new StateControlOperationPlugin()).id();
+        ProfileDataStorage profileDataStorage = new ProfileDataStorage(context);
+        String s_id = (new StateControlOperationSkill()).id();
         for (String pname : profileDataStorage.list()) {
             ProfileStructure profile = profileDataStorage.get(pname);
             Collection<RemoteLocalOperationDataWrapper> dataCollection = profile.get(s_id);

@@ -1,7 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -58,6 +59,55 @@
     <style name="AppTheme.ListItem.OperationSelection">
         <item name="android:padding">@dimen/list_item_operation_selection_margin</item>
         <item name="android:textSize">@dimen/list_item_operation_selection_text_size</item>
+    </style>
+
+    <style name="AppTheme.Intro" />
+
+    <style name="AppTheme.Intro.PureText" >
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Intro.PureText.Heading" parent="AppIntroDefaultHeading">
+        <item name="android:textSize">@dimen/appIntroPureTextHeadingTextSize</item>
+    </style>
+
+    <style name="AppTheme.Intro.PureText.Content" parent="AppIntroDefaultText">
+        <item name="android:textSize">@dimen/appIntroPureTextContentTextSize</item>
+    </style>
+
+    <style name="AppTheme.PivotGraph">
+
+    </style>
+
+    <style name="AppTheme.PivotGraph.Node" parent="CardView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="cardBackgroundColor">@color/nodeBackground</item>
+        <item name="cardElevation">16dp</item>
+        <item name="contentPadding">10dp</item>
+    </style>
+
+    <!-- TODO: Add these different themes for different types of nodes (requires upstream feature) -->
+
+    <style name="AppTheme.PivotGraph.Node.Name">
+        <item name="android:textColor">@color/nodeText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.PivotGraph.Node.ScriptExtra">
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="AppTheme.PivotGraph.Node.ScriptExtra.Type">
+        <item name="android:textColor">@color/nodeText</item>
+        <item name="android:textSize">@dimen/nodeScriptExtraTypeTextSize</item>
+        <item name="android:gravity">top</item>
+    </style>
+    
+    <style name="AppTheme.About" parent="Theme.Mal.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="LR">

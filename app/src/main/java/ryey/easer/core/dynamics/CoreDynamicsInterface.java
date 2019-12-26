@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,9 +21,10 @@ package ryey.easer.core.dynamics;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
-import ryey.easer.commons.local_plugin.dynamics.Dynamics;
+import androidx.annotation.NonNull;
+
+import ryey.easer.commons.local_skill.dynamics.Dynamics;
 
 public interface CoreDynamicsInterface extends Dynamics {
     String invoke(@NonNull Context context, @NonNull Bundle extras);

@@ -2,15 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_pref_autostart"
-        android:summary="@string/pref_autostart_summary"
-        android:title="@string/pref_autostart_title" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="@string/key_pref_restart_after_upgrade"
-        android:title="@string/pref_restart_after_upgrade_title" />
-    <CheckBoxPreference
         android:defaultValue="true"
         android:key="@string/key_pref_welcome"
         android:summary="@string/pref_welcome_summary"
@@ -21,6 +12,31 @@
         android:key="@string/key_pref_logging"
         android:summary="@string/pref_logging_summary"
         android:title="@string/pref_logging_title" />
+
+    <PreferenceCategory android:layout="@layout/pref_divider" />
+
+    <PreferenceCategory android:title="@string/pref_category_service">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/key_pref_autostart"
+            android:summary="@string/pref_autostart_summary"
+            android:title="@string/pref_autostart_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_pref_restart_after_upgrade"
+            android:title="@string/pref_restart_after_upgrade_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_pref_show_notification"
+            android:summary="@string/pref_show_notification_summary"
+            android:title="@string/pref_show_notification_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="@string/key_pref_show_notification"
+            android:key="@string/key_pref_foreground"
+            android:summary="@string/pref_foreground_summary"
+            android:title="@string/pref_foreground_title" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:layout="@layout/pref_divider" />
 
@@ -39,16 +55,10 @@
             android:singleLine="true"
             android:summary="@string/pref_cooldown_summary"
             android:title="@string/pref_cooldown_title" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_pref_passive_mode"
-            android:summaryOn="@string/pref_passive_mode_summary_on"
-            android:summaryOff="@string/pref_passive_mode_summary_off"
-            android:title="@string/pref_passive_mode_title" />
         <Preference
             android:key="@string/key_pref_plugins"
-            android:summary="@string/pref_enabled_plugins_summary"
-            android:title="@string/pref_enabled_plugins_title" />
+            android:summary="@string/pref_enabled_skills_summary"
+            android:title="@string/pref_enabled_skills_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:layout="@layout/pref_divider" />
@@ -58,6 +68,12 @@
             android:defaultValue="false"
             android:key="@string/key_pref_use_12_hour_clock"
             android:title="@string/pref_use_12_hour_clock_title" />
+        <ListPreference
+            android:defaultValue="_"
+            android:entries="@array/array_languages"
+            android:entryValues="@array/array_languages_values"
+            android:key="@string/key_pref_locale_lang"
+            android:title="@string/pref_locale_custom" />
     </PreferenceCategory>
 
     <PreferenceCategory android:layout="@layout/pref_divider" />

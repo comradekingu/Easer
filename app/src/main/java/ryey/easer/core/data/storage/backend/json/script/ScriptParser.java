@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,27 +21,33 @@ package ryey.easer.core.data.storage.backend.json.script;
 
 import android.content.Context;
 
+import androidx.collection.ArraySet;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import ryey.easer.BuildConfig;
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
-import ryey.easer.commons.local_plugin.dynamics.DynamicsLink;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.dynamics.DynamicsLink;
+import ryey.easer.commons.local_skill.eventskill.EventData;
 import ryey.easer.core.data.ConditionStructure;
 import ryey.easer.core.data.EventStructure;
 import ryey.easer.core.data.ScriptStructure;
 import ryey.easer.core.data.storage.C;
 import ryey.easer.core.data.storage.ConditionDataStorage;
 import ryey.easer.core.data.storage.EventDataStorage;
+import ryey.easer.core.data.storage.RequiredDataNotFoundException;
 import ryey.easer.core.data.storage.backend.IOUtils;
 import ryey.easer.core.data.storage.backend.Parser;
 import ryey.easer.plugin.PluginDataFormat;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.skills.LocalSkillRegistry;
 
 class ScriptParser implements Parser<ScriptStructure> {
 
@@ -61,7 +67,24 @@ class ScriptParser implements Parser<ScriptStructure> {
             scriptStructure.setName(jsonObject.getString(C.NAME));
             scriptStructure.setActive(jsonObject.optBoolean(C.ACTIVE, true));
             scriptStructure.setProfileName(jsonObject.optString(C.PROFILE, null));
-            scriptStructure.setParentName(jsonObject.optString(C.AFTER, null));
+            {
+                if (version < C.VERSION_GRAPH_SCRIPT) {
+                    if (jsonObject.has(C.AFTER)) {
+                        String parent = jsonObject.getString(C.AFTER);
+                        Set<String> predecessors = new ArraySet<>(Collections.singletonList(parent));
+                        scriptStructure.setPredecessors(predecessors);
+                    }
+                } else {
+                    JSONArray arrayPredecessors = jsonObject.optJSONArray(C.AFTER);
+                    if (arrayPredecessors != null) {
+                        Set<String> predecessors = new ArraySet<>(arrayPredecessors.length());
+                        for (int i = 0; i < arrayPredecessors.length(); i++) {
+                            predecessors.add(arrayPredecessors.getString(i));
+                        }
+                        scriptStructure.setPredecessors(predecessors);
+                    }
+                }
+            }
             if (version < C.VERSION_USE_SCENARIO) { // Can be removed (because this is covered by the else statement)
                 EventData eventData = parse_eventData(jsonObject.getJSONObject(C.TRIG), version);
                 scriptStructure.setEventData(eventData);
@@ -112,12 +135,12 @@ class ScriptParser implements Parser<ScriptStructure> {
                         event_name = jsonObject_trigger.getString(C.SCENARIO);
                     else
                         event_name = jsonObject_trigger.getString(C.EVENT);
-                    EventStructure event = EventDataStorage.getInstance(context).get(event_name);
+                    EventStructure event = new EventDataStorage(context).get(event_name);
                     scriptStructure.setEvent(event);
                     break;
                 case C.TriggerType.T_CONDITION:
                     String condition_name = jsonObject_trigger.getString(C.CONDITION);
-                    ConditionStructure condition = ConditionDataStorage.getInstance(context).get(condition_name);
+                    ConditionStructure condition = new ConditionDataStorage(context).get(condition_name);
                     scriptStructure.setCondition(condition);
                     break;
                 default:
@@ -125,6 +148,8 @@ class ScriptParser implements Parser<ScriptStructure> {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            throw new IllegalStorageDataException(e);
+        } catch (RequiredDataNotFoundException e) {
             throw new IllegalStorageDataException(e);
         }
     }
@@ -136,7 +161,7 @@ class ScriptParser implements Parser<ScriptStructure> {
                 throw new AssertionError();
             JSONObject jsonObject_situation = jsonObject_trigger.getJSONObject(C.SIT);
             String spec = jsonObject_situation.getString(C.SPEC);
-            return PluginRegistry.getInstance().event().findPlugin(spec)
+            return LocalSkillRegistry.getInstance().event().findSkill(spec)
                     .dataFactory()
                     .parse(jsonObject_situation.getString(C.DATA), PluginDataFormat.JSON, version);
         } catch (JSONException e) {

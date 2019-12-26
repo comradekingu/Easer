@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -33,6 +33,10 @@ public class C {
     public static final String ON = "on";
 
     public static final String VERSION = "version";
+    public static final int VERSION_GRAPH_SCRIPT = 15;
+    public static final int VERSION_RENAME_BATTERY_USOURCE = 14;
+    public static final int VERSION_SEPARATED_EXTRAS = 13;
+    public static final int VERSION_UNIFORMED_SOURCE = 12;
     public static final int VERSION_ADD_DYNAMICS = 11;
     public static final int VERSION_RENAME_SCENARIO_TO_EVENT = 10;
     public static final int VERSION_RENAME_STATE_CONTROL = 9;
@@ -46,6 +50,6 @@ public class C {
     public static final int VERSION_FULL_MULTI = 1;
     public static final int VERSION_FALLBACK = 0;
     public static final int VERSION_CREATED_IN_RUNTIME = -1;
-    public static final int VERSION_CURRENT = VERSION_ADD_DYNAMICS;
+    public static final int VERSION_CURRENT = VERSION_GRAPH_SCRIPT;
 
 }

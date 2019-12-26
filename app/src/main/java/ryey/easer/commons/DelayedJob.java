@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,7 +19,7 @@
 
 package ryey.easer.commons;
 
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 
 import com.orhanobut.logger.Logger;
 

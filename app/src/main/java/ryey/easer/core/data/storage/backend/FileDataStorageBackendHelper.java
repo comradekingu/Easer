@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -27,7 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 
 public class FileDataStorageBackendHelper {
 

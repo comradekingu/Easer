@@ -1,56 +1,24 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="ev_condition_event">Tilstandshændelse</string>
-    <string name="condition_event_enter">Ankomme</string>
-    <string name="condition_event_leave">Forlade</string>
-
-
-    <string name="condition_bluetooth_device">Forbundet bluetooth enhed</string>
-
-    <string name="condition_cell_location">@string/event_celllocation</string>
-
-    <string name="condition_connectivity">@string/event_connectivity</string>
-
-    <string name="condition_date">@string/event_date</string>
-
-    <string name="condition_day_of_week">@string/event_day_of_week</string>
-
-    <string name="condition_headset">@string/event_headset</string>
-    <string name="condition_headset__headset_state">Hovedtelefon tilstand</string>
-    <string name="condition_headset__plugged_in">Tilsluttet</string>
-    <string name="condition_headset__plugged_out">Frakoblet</string>
-
-    <string name="condition_screen">@string/event_screen</string>
-
-    <string name="condition_time">@string/event_time</string>
-
-    <string name="condition_wifi">@string/event_wificonn</string>
-
-
-    <string name="event_time">Tidspunkt</string>
-    <string name="event_date">Dato</string>
-
-    <string name="event_wificonn">Trådløs forbindelse</string>
-    <string name="wificonn_select_dialog_title">Vælge trådløs adgangspunkt</string>
-    <string name="wificonn_wait_for_result">Venter på trådløs skanne svar</string>
-
-    <string name="event_celllocation">Celle placering</string>
-
-    <string name="event_battery">Batteri status</string>
-   <array name="battery_status">
-        <item>Lader</item>
-        <item>Aflader</item>
-    </array>
-
-    <string name="event_day_of_week">Ugedag</string>
-
-    <string name="event_bluetooth_device">Bluetooth enhed forbundet</string>
-    <string name="ebtdevice_select_dialog_title">Vælge Bluetooth enhed</string>
-    <string name="ebtdevice_unknown_device">Ukendt enhed</string>
-
-    <string name="event_connectivity">Forbindelsestype</string>
-    <array name="connectivity_type">
+    <string name="event_condition_event">Tilstand hændelse</string>
+    <string name="event_condition_event_enter">Ankomme</string>
+    <string name="event_condition_event_leave">Forlade</string>
+    <string name="usource_headset__headset_state">Hovedtelefon tilstand</string>
+    <string name="usource_headset__plugged_in">Tilsluttet</string>
+    <string name="usource_headset__plugged_out">Frakoblet</string>
+    <string name="usource_time">Tidspunkt</string>
+    <string name="usource_date">Dato</string>
+    <string name="usource_wificonn">Trådløs netværk forbindelse</string>
+    <string name="usource_wificonn_select_dialog_title">Vælg trådløs netværk adgangs-punkt</string>
+    <string name="usource_wificonn_wait_for_result">Venter på trådløs netværk skanne svar</string>
+    <string name="usource_cell_location">Celle placering</string>
+    <string name="usource_power">Batteri status</string>
+    <string name="usource_day_of_week">Ugedag</string>
+    <string name="usource_bluetooth_device">Bluetooth enhed forbundet</string>
+    <string name="usource_bt_device_select_dialog_title">Vælg Bluetooth enhed</string>
+    <string name="usource_bt_device_unknown_device">Ukendt enhed</string>
+    <string name="usource_connectivity">Forbindelsestype</string>
+    <array name="usource_connectivity_type">
         <item>Ikke forbundet</item>
         <item>Trådløs</item>
         <item>Mobil</item>
@@ -58,82 +26,70 @@
         <item>Bluetooth</item>
         <item>Virtuelt privat netværk (VPN)</item>
     </array>
-
     <string name="event_calendar">Kalender begivenhed</string>
-    <string name="ecalendar_select_dialog_title">Vælge kalender</string>
+    <string name="ecalendar_select_dialog_title">Vælg kalender</string>
     <string name="text_calendar_name">Kalender navn</string>
     <string name="text_calendar">Kalender</string>
     <string name="indicator_when">Når…</string>
     <string name="choice_start_of">Start ved</string>
     <string name="choice_end_of">Slut ved</string>
     <string name="choice_any_event">Enhver hændelse</string>
-
-    <string name="event_broadcast">Modtage udsendelse</string>
-    <string name="text_action">Handling</string>
-    <string name="text_category">Kategori</string>
-
-    <string name="event_sms">Modtage SMS</string>
+    <string name="event_broadcast">Modtag udsendelse</string>
+    <string name="broadcast_action">Handling</string>
+    <string name="broadcast_category">Kategori</string>
+    <string name="event_sms">Modtag SMS</string>
     <string name="sender">Afsender</string>
     <string name="content_contains">Indhold (indeholder…)</string>
-
     <string name="event_notification">Påmindelse modtaget</string>
     <string name="event_notification__app">Program</string>
-    <string name="event_notification__app_hint">Fuldt kvalificeret pakkenavn for program</string>
+    <string name="event_notification__app_hint">Fuldt kvalificeret program pakkenavn</string>
     <string name="event_notification__title">Titel (indeholder…)</string>
     <string name="event_notification__content">Indhold (indeholder…)</string>
     <string name="label_event_notification_listener_service">Påmindelse hændelseslytter</string>
     <string name="ev_notification_dynamics_app">Påmindelse sender program</string>
     <string name="ev_notification_dynamics_title">Påmindelse titel</string>
     <string name="ev_notification_dynamics_content">Påmindelse indhold</string>
-
     <string name="event_timer">Timer</string>
     <string name="exact_timer">Nøjagtig timer?</string>
     <string name="exact">Nøjagtig</string>
     <string name="inexact">Unøjagtig</string>
     <string name="repeative_timer">Gentagelig timer?</string>
-    <string name="repeat">Gentage</string>
+    <string name="repeat">Gentag</string>
     <string name="one_time">Én gang</string>
     <string name="minutes">Minutter</string>
-
     <string name="event_nfc_tag">NFC mærke</string>
     <string name="event_nfc_tag__button_detect">Opdage mærke</string>
     <string name="event_nfc_tag__prompt_enable_nfc_first">NFC skal først aktiveres</string>
-    <string name="event_nfc_tag__prompt_wait_for_tag">Venter på at mærke skannes…</string>
-
-    <string name="event_headset">Hovedtelefon</string>
-    <string name="event_headset__headset_action">Hovedtelefon handling</string>
-    <string name="event_headset__plug_in">Tilslutte</string>
-    <string name="event_headset__plug_out">Frakoble</string>
-    <string name="event_headset__plug_any">Enhver</string>
-    <string name="event_headset__with_microphone">Med mikrofon?</string>
-    <string name="event_headset__microphone_true">Ja</string>
-    <string name="event_headset__microphone_false">Nej</string>
-    <string name="event_headset__microphone_any">Enhver</string>
-
-    <string name="event_tcp_trip">TCP udløser</string>
+    <string name="event_nfc_tag__prompt_wait_for_tag">Venter på mærke skannes…</string>
+    <string name="usource_headset">Hovedtelefon</string>
+    <string name="usource_headset__headset_action">Hovedtelefon handling</string>
+    <string name="usource_headset__plug_in">Tilslutte</string>
+    <string name="usource_headset__plug_out">Frakoble</string>
+    <string name="usource_event_headset__plug_any">Enhver</string>
+    <string name="usource_headset__with_microphone">Med mikrofon?</string>
+    <string name="usource_headset__microphone_true">Ja</string>
+    <string name="usource_headset__microphone_false">Nej</string>
+    <string name="usource_headset__microphone_any">Enhver</string>
+    <string name="event_tcp_trip">TCP rundtur tid</string>
     <string name="remote_host">Fjern vært</string>
-    <string name="send_data">Sende data</string>
+    <string name="send_data">Send data</string>
     <string name="check_reply">Kontrollere svar</string>
     <string name="reply_data">Svar data</string>
-
-    <string name="event_screen">Skærm status</string>
-    <string name="ev_screen_text_screen_is">Når skærm er…</string>
-    <string name="ev_screen_on">Til</string>
-    <string name="ev_screen_off">Fra</string>
-    <string name="ev_screen_unlocked">Låst op</string>
-
-
+    <string name="usource_screen">Skærm status</string>
+    <string name="usource_screen_text_screen_is">Når skærm er…</string>
+    <string name="usource_screen_on">Til</string>
+    <string name="usource_screen_off">Fra</string>
+    <string name="usource_screen_unlocked">Låst op</string>
     <string name="operation_wifi">Trådløs</string>
     <string name="operation_cellular">Mobil data</string>
     <string name="operation_bluetooth">Bluetooth</string>
     <string name="operation_rotation">Automatisk rotere</string>
-
-    <string name="operation_broadcast">Sende udsendelse</string>
+    <string name="operation_broadcast">Send udsendelse</string>
     <string name="obroadcast_l_action">Handling:</string>
     <string name="obroadcast_l_category">Kategori:</string>
     <string name="obroadcast_l_type">Type:</string>
     <string name="obroadcast_l_data">Data:</string>
-    <string name="text_extras">Ekstra</string>
+    <string name="text_extras">Ekstra funktioner</string>
     <string name="text_key">Nøgle</string>
     <string name="text_value">Værdi</string>
     <string name="text_type">Type</string>
@@ -141,26 +97,22 @@
         <item>string</item>
         <item>int</item>
     </array>
-
     <string name="operation_brightness">Lysstyrke</string>
     <string name="operation_brightness_desc_autobrightness">Automatisk lysstyrke</string>
-
     <string name="operation_ringer_mode">Opkaldstilstand</string>
     <string name="ringer_mode_normal">Normal</string>
     <string name="ringer_mode_vibrate">Vibrere</string>
     <string name="ringer_mode_silent">Stille</string>
-    <string name="ringer_mode_dnd">Forstyrre ikke</string>
+    <string name="ringer_mode_dnd">Forstyr ikke</string>
     <string name="ringer_mode_dnd_all">Alle</string>
     <string name="ringer_mode_dnd_priority">Prioritet</string>
     <string name="ringer_mode_dnd_none">Ingen</string>
     <string name="ringer_mode_dnd_alarms">Alarmer</string>
-    <string name="ringing_items_in_do_not_disturb_mode">Opkaldselementer i forstyrre ikke tilstand</string>
+    <string name="ringing_items_in_do_not_disturb_mode">Opkalds-elementer i forstyr ikke tilstand</string>
     <string name="label_operation_ringer_mode_notification_listener_service">Ændre stille tilstand</string>
-
     <string name="operation_command">Udføre kommandoer</string>
     <string name="operation_hotspot">Brændpunkt</string>
     <string name="operation_synchronization">Konto synkronisering</string>
-
     <string name="operation_network_transmission">Netværk overførsel</string>
     <string name="o_nettrans_protocol">Protokol</string>
     <string name="o_nettrans_tcp">TCP</string>
@@ -168,7 +120,6 @@
     <string name="o_nettrans_remote_address">Fjern adresse</string>
     <string name="o_nettrans_remote_port">Fjern port</string>
     <string name="o_nettrans_data">Data</string>
-
     <string name="operation_media_control">Medie kontrol</string>
     <string name="text_play_pause">Skifte mellem afspil/pause</string>
     <string name="text_play">Afspil</string>
@@ -176,42 +127,101 @@
     <string name="text_previous">Forrige</string>
     <string name="text_next">Næste</string>
     <string name="operation_media_control_helper_service_label">Hjælper til medie kontrol</string>
-
     <string name="operation_airplane_mode">Fly tilstand</string>
-
-    <string name="operation_send_sms">Sende SMS</string>
+    <string name="operation_send_sms">Send SMS</string>
     <string name="destination">Mål</string>
     <string name="content">Indhold</string>
-
-    <string name="operation_send_notification">Sende påmindelse</string>
+    <string name="operation_send_notification">Send påmindelse</string>
     <string name="title">Titel</string>
-
-    <string name="operation_alarm">Sætte alarm</string>
+    <string name="operation_alarm">Sæt alarm</string>
     <string name="operation_alarm__absolute">Absolut</string>
     <string name="operation_alarm__relative">Relativ</string>
     <string name="operation_alarm__time">Tid</string>
     <string name="operation_alarm__message">Besked</string>
-
     <string name="operation_state_control">Kontrollere hændelse status</string>
     <string name="change_status_to">Ændre status til…</string>
     <string name="unsatisfied">Ikke tilfreds</string>
-
     <string name="operation_volume">Justere lydstyrke</string>
     <string name="o_volume_ring">Opkald</string>
     <string name="o_volume_media">Medie</string>
     <string name="o_volume_alarm">Alarm</string>
     <string name="o_volume_notification">Påmindelse</string>
     <string name="o_volume_bluetooth">Bluetooth</string>
-    <string name="o_volume_delay">Forsinke (s)</string>
-
-    <string name="op_launch_app">Starte program</string>
+    <string name="o_volume_delay">Forsink (s)</string>
+    <string name="op_launch_app">Start program</string>
     <string name="op_launch_app_text_app">Program</string>
-    <string name="op_launch_app_text_package_name">Pakkenavn</string>
-
+    <string name="op_launch_app_text_app_hint">Pakkenavn</string>
     <string name="op_ui_mode">Bil tilstand</string>
     <string name="op_car_mode">Bil tilstand</string>
     <string name="op_normal_mode">Normal tilstand</string>
-
-    <string name="rel_after">Efter</string>
-
+    <string name="condition__rel_after">Efter</string>
+    <string name="ev_sms_dynamics_sender">SMS afsender</string>
+    <string name="ev_sms_dynamics_content">SMS indhold</string>
+    <string name="usource_cell_location_no_signal">Kan ikke få celleplacering. Kontrollere signal.</string>
+    <string name="usource_wifi_enabled">Trådløs aktiveret</string>
+    <string name="usource_wifi_enabled_wifi_is_enabled">Er trådløs aktiveret\?</string>
+    <string name="usource_bluetooth_enabled">Bluetooth aktiveret</string>
+    <string name="usource_bluetooth_enabled_bluetooth_is_enabled">Er bluetooth aktiveret\?</string>
+    <string name="usource__enabled_yes">Ja</string>
+    <string name="usource__enabled_no">Nej</string>
+    <string name="event_timer_shorter_time">Kortere tid</string>
+    <string name="event_timer_longer_time">Længere tid</string>
+    <string name="event_timer_seconds">Sekund(er)</string>
+    <string name="event_condition_event_dynamics_name">Tilstand navn</string>
+    <string name="usource_cell_location_listening_content">Sammenlæg celle placering…</string>
+    <string name="usource_cell_location_dynamics_cell_location">Celle placering</string>
+    <string name="usource_bt_device_dynamics_device_name">Enhed navn</string>
+    <string name="usource_bt_device_dynamics_device_address">Enhed adresse</string>
+    <string name="broadcast_type">Type</string>
+    <string name="broadcast_data">Data</string>
+    <string name="usource_cell_location_listening_title">Lytter</string>
+    <string name="o_launch_app__launch_activity">Start handling</string>
+    <string name="o_launch_app__text_class">Klassenavn</string>
+    <string name="o_launch_app__text_class_hint">Tom eller fuld klassenavn</string>
+    <string name="o_play_media">Afspil medie</string>
+    <string name="o_play_media_text_file">Fil sti</string>
+    <string name="condition_ringer_mode">Opkald tilstand</string>
+    <string name="condition_ringer_volume">Lydstyrke</string>
+    <string name="condition_ringer_above">Mindst</string>
+    <string name="condition_ringer_below">Højst</string>
+    <string name="condition_ringer_equals">Svarer til</string>
+    <string name="condition_calendar_name">Kalender navn</string>
+    <string name="condition_calendar_event_title">Hændelse titel</string>
+    <string name="condition_calendar_any_event">Enhver hændelse</string>
+    <string name="condition_calendar_event_match_pattern">Find mønster</string>
+    <string name="condition_calendar_all_day_event">Find kun hele-dagen hændelser</string>
+    <string name="category_source_android">Android</string>
+    <string name="category_source_date_time">Dato / tid</string>
+    <string name="category_source_device">Enhed</string>
+    <string name="category_source_easer">Easer</string>
+    <string name="category_source_data_communication">Data kommunikation</string>
+    <string name="category_source_misc">Div.</string>
+    <string name="category_source_personal">Personlig</string>
+    <string name="category_source_unknown">Ukendt</string>
+    <string name="event_widget">Kontrol</string>
+    <string name="event_widget_widget_label">WidgetEvent kontrol</string>
+    <string name="event_widget_text">Tekst</string>
+    <string name="event_widget_tag">Mærke</string>
+    <string name="event_widget_default_text">VIS TEKST</string>
+    <string name="event_widget_default_tag">MÆRKE</string>
+    <string name="event_widget_button_add_widget">Tilføj kontrol</string>
+    <string name="usource_power__charging">Oplader</string>
+    <string name="usource_power__discharging">Aflader</string>
+    <string name="usource_power__any">Enhver</string>
+    <string name="usource_power__usb">USB</string>
+    <string name="usource_power__ac">AC</string>
+    <string name="usource_call">Opkald</string>
+    <string name="usource_call_state">Opkaldstilstand</string>
+    <string name="usource_call_state_idle">Tomgang</string>
+    <string name="usource_call_state_ringing">Ringer</string>
+    <string name="usource_call_state_ongoing">Igangværende</string>
+    <string name="usource_call_number">Nummer</string>
+    <string name="operation_http_request">HTTP forespørgsel</string>
+    <string name="o_http_method">Metode</string>
+    <string name="o_http_get">GET</string>
+    <string name="o_http_post">POST</string>
+    <string name="o_http_url">URL</string>
+    <string name="o_http_header">Hoved (linje format: nøgle: værdi)</string>
+    <string name="o_http_content_type">Indhold type</string>
+    <string name="o_http_post_data">Indsend data</string>
 </resources>

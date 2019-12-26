@@ -1,82 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="ev_condition_event">Condition Event</string>
-    <string name="condition_event_enter">Enter</string>
-    <string name="condition_event_leave">Leave</string>
+    <!--Source Category (c)-->
 
+    <string name="category_source_android">Android</string>
+    <string name="category_source_date_time">Date / Time</string>
+    <string name="category_source_device">Device</string>
+    <string name="category_source_easer">Easer</string>
+    <string name="category_source_data_communication">Data communication</string>
+    <string name="category_source_misc">Misc</string>
+    <string name="category_source_personal">Personal</string>
+    <string name="category_source_unknown">Unknown</string>
 
-    <string name="condition_bluetooth_device">Connected Bluetooth device</string>
+    <!--Condition (c)-->
 
-    <string name="condition_cell_location">@string/event_celllocation</string>
+    <string name="condition__rel_after">After</string>
 
-    <string name="condition_connectivity">@string/event_connectivity</string>
+    <string name="condition_calendar_name">Calendar Name</string>
+    <string name="condition_calendar_event_title">Event Title</string>
+    <string name="condition_calendar_any_event">Any Event</string>
+    <string name="condition_calendar_event_match_pattern">Match Pattern</string>
+    <string name="condition_calendar_all_day_event">Only match all-day events</string>
 
-    <string name="condition_date">@string/event_date</string>
+    <string name="condition_ringer_mode">Ringer Mode</string>
+    <string name="condition_ringer_volume">Volume</string>
+    <string name="condition_ringer_above">At least</string>
+    <string name="condition_ringer_below">At most</string>
+    <string name="condition_ringer_equals">Equals</string>
 
-    <string name="condition_day_of_week">@string/event_day_of_week</string>
+    <!--Event (e, ev)-->
 
-    <string name="condition_headset">@string/event_headset</string>
-    <string name="condition_headset__headset_state">Headset state</string>
-    <string name="condition_headset__plugged_in">Plugged in</string>
-    <string name="condition_headset__plugged_out">Plugged out</string>
-
-    <string name="condition_screen">@string/event_screen</string>
-
-    <string name="condition_time">@string/event_time</string>
-
-    <string name="condition_wifi">@string/event_wificonn</string>
-
-
-    <string name="event_time">Time</string>
-    <string name="event_date">Date</string>
-
-    <string name="event_wificonn">Wi-Fi Connection</string>
-    <string name="wificonn_select_dialog_title">Select Wi-Fi AP</string>
-    <string name="wificonn_wait_for_result">Awaiting Wi-Fi scan result</string>
-
-    <string name="event_celllocation">Cell Location</string>
-
-    <string name="event_battery">Battery Status</string>
-    <array name="battery_status">
-        <item>Charging</item>
-        <item>Discharging</item>
-    </array>
-
-    <string name="event_day_of_week">Day of the Week</string>
-
-    <string name="event_bluetooth_device">Bluetooth Device Connected</string>
-    <string name="ebtdevice_select_dialog_title">Select Bluetooth Device</string>
-    <string name="ebtdevice_unknown_device">Unknown device</string>
-
-    <string name="event_connectivity">Connectivity Type</string>
-    <array name="connectivity_type">
-        <item>Not connected</item>
-        <item>Wi-Fi</item>
-        <item>Mobile</item>
-        <item>Ethernet</item>
-        <item>Bluetooth</item>
-        <item>VPN</item>
-    </array>
+    <string name="event_broadcast">Receive Broadcast</string>
+    <string name="broadcast_action">Action</string>
+    <string name="broadcast_category">Category</string>
+    <string name="broadcast_type">Type</string>
+    <string name="broadcast_data">Data</string>
 
     <string name="event_calendar">Calendar Event</string>
     <string name="ecalendar_select_dialog_title">Select Calendar</string>
-    <string name="text_calendar_name">Calendar name</string>
+    <string name="text_calendar_name">Calendar Name</string>
     <string name="text_calendar">Calendar</string>
     <string name="indicator_when">When…</string>
     <string name="choice_start_of">Start of</string>
     <string name="choice_end_of">End of</string>
-    <string name="choice_any_event">Any Events</string>
+    <string name="choice_any_event">Any Event</string>
 
-    <string name="event_broadcast">Receive Broadcast</string>
-    <string name="text_action">Action</string>
-    <string name="text_category">Category</string>
+    <string name="event_condition_event">Condition Event</string>
+    <string name="event_condition_event_enter">Enter</string>
+    <string name="event_condition_event_leave">Leave</string>
+    <string name="event_condition_event_dynamics_name">Condition Name</string>
 
-    <string name="event_sms">Receive SMS</string>
-    <string name="sender">Sender</string>
-    <string name="content_contains">Content (contains…)</string>>
-    <string name="ev_sms_dynamics_sender">SMS Sender</string>
-    <string name="ev_sms_dynamics_content">SMS Content</string>
+    <string name="event_nfc_tag">NFC Tag</string>
+    <string name="event_nfc_tag__button_detect">Detect Tag</string>
+    <string name="event_nfc_tag__prompt_enable_nfc_first">You need to enable NFC first</string>
+    <string name="event_nfc_tag__prompt_wait_for_tag">Awaiting tag scanning…</string>
 
     <string name="event_notification">Notification received</string>
     <string name="event_notification__app">App</string>
@@ -88,7 +65,22 @@
     <string name="ev_notification_dynamics_title">Notification Title</string>
     <string name="ev_notification_dynamics_content">Notification Content</string>
 
+    <string name="event_sms">Receive SMS</string>
+    <string name="sender">Sender</string>
+    <string name="content_contains">Content (contains…)</string>>
+    <string name="ev_sms_dynamics_sender">SMS Sender</string>
+    <string name="ev_sms_dynamics_content">SMS Content</string>
+
+    <string name="event_tcp_trip">TCP Trip</string>
+    <string name="remote_host">Remote host</string>
+    <string name="send_data">Send data</string>
+    <string name="check_reply">Check reply</string>
+    <string name="reply_data">Reply data</string>
+
     <string name="event_timer">Timer</string>
+    <string name="event_timer_shorter_time">Shorter Time</string>
+    <string name="event_timer_longer_time">Longer Time</string>
+    <string name="event_timer_seconds">Second(s)</string>
     <string name="exact_timer">Exact timer?</string>
     <string name="exact">Exact</string>
     <string name="inexact">Inexact</string>
@@ -97,38 +89,28 @@
     <string name="one_time">One time</string>
     <string name="minutes">Minutes</string>
 
-    <string name="event_nfc_tag">NFC Tag</string>
-    <string name="event_nfc_tag__button_detect">Detect Tag</string>
-    <string name="event_nfc_tag__prompt_enable_nfc_first">You need to enable NFC first</string>
-    <string name="event_nfc_tag__prompt_wait_for_tag">Awaiting tag scanning…</string>
+    <string name="event_widget">Widget</string>
+    <string name="event_widget_widget_label">WidgetEvent Widget</string>
+    <string name="event_widget_text">Text</string>
+    <string name="event_widget_tag">Tag</string>
+    <string name="event_widget_default_text">DISPLAY TEXT</string>
+    <string name="event_widget_default_tag">TAG</string>
+    <string name="event_widget_button_add_widget">Add widget</string>
 
-    <string name="event_headset">Headset</string>
-    <string name="event_headset__headset_action">Headset Action</string>
-    <string name="event_headset__plug_in">Plugged in</string>
-    <string name="event_headset__plug_out">Plugged out</string>
-    <string name="event_headset__plug_any">Any</string>
-    <string name="event_headset__with_microphone">With microphone?</string>
-    <string name="event_headset__microphone_true">Yes</string>
-    <string name="event_headset__microphone_false">No</string>
-    <string name="event_headset__microphone_any">Any</string>
+    <!--Operation (o, op)-->
 
-    <string name="event_tcp_trip">TCP Trip</string>
-    <string name="remote_host">Remote host</string>
-    <string name="send_data">Send data</string>
-    <string name="check_reply">Check reply</string>
-    <string name="reply_data">Reply data</string>
+    <string name="operation_airplane_mode">Airplane Mode</string>
 
-    <string name="event_screen">Screen Status</string>
-    <string name="ev_screen_text_screen_is">When screen is…</string>
-    <string name="ev_screen_on">On</string>
-    <string name="ev_screen_off">Off</string>
-    <string name="ev_screen_unlocked">Unlocked</string>
+    <string name="operation_alarm">Set Alarm</string>
+    <string name="operation_alarm__absolute">Absolute</string>
+    <string name="operation_alarm__relative">Relative</string>
+    <string name="operation_alarm__time">Time</string>
+    <string name="operation_alarm__message">Message</string>
 
-
-    <string name="operation_wifi">Wi-Fi</string>
-    <string name="operation_cellular">Mobile data</string>
     <string name="operation_bluetooth">Bluetooth</string>
-    <string name="operation_rotation">Auto Rotation</string>
+
+    <string name="operation_brightness">Brightness</string>
+    <string name="operation_brightness_desc_autobrightness">Auto brightness</string>
 
     <string name="operation_broadcast">Send Broadcast</string>
     <string name="obroadcast_l_action">Action:</string>
@@ -144,8 +126,46 @@
         <item>int</item>
     </array>
 
-    <string name="operation_brightness">Brightness</string>
-    <string name="operation_brightness_desc_autobrightness">Auto brightness</string>
+    <string name="operation_cellular">Mobile data</string>
+
+    <string name="operation_command">Run commands</string>
+
+    <string name="operation_hotspot">Hotspot</string>
+
+    <string name="operation_http_request">HTTP request</string>
+    <string name="o_http_method">Method</string>
+    <string name="o_http_get">GET</string>
+    <string name="o_http_post">POST</string>
+    <string name="o_http_url">URL</string>
+    <string name="o_http_header">Header (line format: "key: value")</string>
+    <string name="o_http_content_type">Content type</string>
+    <string name="o_http_post_data">Post data</string>
+
+    <string name="op_launch_app">Launch App</string>
+    <string name="o_launch_app__launch_activity">Launch Activity</string>
+    <string name="op_launch_app_text_app">App</string>
+    <string name="op_launch_app_text_app_hint">Package Name</string>
+    <string name="o_launch_app__text_class">Class Name</string>
+    <string name="o_launch_app__text_class_hint">Empty or full class name</string>
+
+    <string name="operation_media_control">Media Control</string>
+    <string name="text_play_pause">Toogle play/pause</string>
+    <string name="text_play">Play</string>
+    <string name="text_pause">Pause</string>
+    <string name="text_previous">Previous</string>
+    <string name="text_next">Next</string>
+    <string name="operation_media_control_helper_service_label">Helper for Media Control</string>
+
+    <string name="operation_network_transmission">Network transmission</string>
+    <string name="o_nettrans_protocol">Protocol</string>
+    <string name="o_nettrans_tcp">TCP</string>
+    <string name="o_nettrans_udp">UDP</string>
+    <string name="o_nettrans_remote_address">Remote Address</string>
+    <string name="o_nettrans_remote_port">Remote Port</string>
+    <string name="o_nettrans_data">Data</string>
+
+    <string name="o_play_media">Play Media</string>
+    <string name="o_play_media_text_file">File Path</string>
 
     <string name="operation_ringer_mode">Ringer Mode</string>
     <string name="ringer_mode_normal">Normal</string>
@@ -159,44 +179,27 @@
     <string name="ringing_items_in_do_not_disturb_mode">Ringing items in \"Do not Disturb\" mode</string>
     <string name="label_operation_ringer_mode_notification_listener_service">Silent Mode Switcher</string>
 
-    <string name="operation_command">Run commands</string>
-    <string name="operation_hotspot">Hotspot</string>
-    <string name="operation_synchronization">Account syncing</string>
+    <string name="operation_rotation">Auto Rotation</string>
 
-    <string name="operation_network_transmission">Network transmission</string>
-    <string name="o_nettrans_protocol">Protocol</string>
-    <string name="o_nettrans_tcp">TCP</string>
-    <string name="o_nettrans_udp">UDP</string>
-    <string name="o_nettrans_remote_address">Remote Address</string>
-    <string name="o_nettrans_remote_port">Remote Port</string>
-    <string name="o_nettrans_data">Data</string>
-
-    <string name="operation_media_control">Media Control</string>
-    <string name="text_play_pause">Toogle play/pause</string>
-    <string name="text_play">Play</string>
-    <string name="text_pause">Pause</string>
-    <string name="text_previous">Previous</string>
-    <string name="text_next">Next</string>
-    <string name="operation_media_control_helper_service_label">Helper for Media Control</string>
-
-    <string name="operation_airplane_mode">Airplane Mode</string>
+    <string name="operation_send_notification">Send Notification</string>
+    <string name="title">Title</string>
 
     <string name="operation_send_sms">Send SMS</string>
     <string name="destination">Destination</string>
     <string name="content">Content</string>
 
-    <string name="operation_send_notification">Send Notification</string>
-    <string name="title">Title</string>
-
-    <string name="operation_alarm">Set Alarm</string>
-    <string name="operation_alarm__absolute">Absolute</string>
-    <string name="operation_alarm__relative">Relative</string>
-    <string name="operation_alarm__time">Time</string>
-    <string name="operation_alarm__message">Message</string>
-
     <string name="operation_state_control">Control Script Node Status</string>
     <string name="change_status_to">Change status to…</string>
     <string name="unsatisfied">Unsatisfied</string>
+
+    <string name="operation_synchronization">Account syncing</string>
+
+    <string name="operation_toast">Toast</string>
+    <string name="op_toast_hint_text">Text</string>
+
+    <string name="op_ui_mode">Car Mode</string>
+    <string name="op_car_mode">Car Mode</string>
+    <string name="op_normal_mode">Normal Mode</string>
 
     <string name="operation_volume">Adjust Volume</string>
     <string name="o_volume_ring">Ring</string>
@@ -206,14 +209,82 @@
     <string name="o_volume_bluetooth">Bluetooth</string>
     <string name="o_volume_delay">Delay (s)</string>
 
-    <string name="op_launch_app">Launch App</string>
-    <string name="op_launch_app_text_app">App</string>
-    <string name="op_launch_app_text_package_name">Package Name</string>
+    <string name="operation_wifi">Wi-Fi</string>
 
-    <string name="op_ui_mode">Car Mode</string>
-    <string name="op_car_mode">Car Mode</string>
-    <string name="op_normal_mode">Normal Mode</string>
+    <!--USource (us)-->
 
-    <string name="rel_after">After</string>
+    <string name="usource__enabled_yes">Yes</string>
+    <string name="usource__enabled_no">No</string>
+
+    <string name="usource_power">Power Status</string>
+    <string name="usource_power__charging">Charging</string>
+    <string name="usource_power__discharging">Discharging</string>
+    <string name="usource_power__any">Any</string>
+    <string name="usource_power__usb">USB</string>
+    <string name="usource_power__ac">AC</string>
+
+    <string name="usource_bluetooth_device">Connected Bluetooth device</string>
+    <string name="usource_bt_device_select_dialog_title">Select Bluetooth Device</string>
+    <string name="usource_bt_device_unknown_device">Unknown device</string>
+    <string name="usource_bt_device_dynamics_device_name">Device Name</string>
+    <string name="usource_bt_device_dynamics_device_address">Device Address</string>
+
+    <string name="usource_bluetooth_enabled">Bluetooth Enabled</string>
+    <string name="usource_bluetooth_enabled_bluetooth_is_enabled">Bluetooth is enabled?</string>
+
+    <string name="usource_call">Call</string>
+    <string name="usource_call_state">Call State</string>
+    <string name="usource_call_state_idle">Idle</string>
+    <string name="usource_call_state_ringing">Ringing</string>
+    <string name="usource_call_state_ongoing">Ongoing</string>
+    <string name="usource_call_number">Number</string>
+
+    <string name="usource_cell_location">Cell Location</string>
+    <string name="usource_cell_location_no_signal">Can\'t get cell location. Check your signal.</string>
+    <string name="usource_cell_location_listening_title">Listening</string>
+    <string name="usource_cell_location_dynamics_cell_location">Cell Location</string>
+    <string name="usource_cell_location_listening_content">Aggregating cell location…</string>
+
+    <string name="usource_connectivity">Connectivity Type</string>
+    <array name="usource_connectivity_type">
+        <item>Not connected</item>
+        <item>Wi-Fi</item>
+        <item>Mobile</item>
+        <item>Ethernet</item>
+        <item>Bluetooth</item>
+        <item>VPN</item>
+    </array>
+
+    <string name="usource_date">Date</string>
+
+    <string name="usource_day_of_week">Day of the Week</string>
+
+    <string name="usource_headset">Headset</string>
+    <string name="usource_headset__headset_state">Headset state</string>
+    <string name="usource_headset__plugged_in">Plugged in</string>
+    <string name="usource_headset__plugged_out">Plugged out</string>
+    <string name="usource_headset__headset_action">Headset Action</string>
+    <string name="usource_headset__plug_in">Plugged in</string>
+    <string name="usource_headset__plug_out">Plugged out</string>
+    <string name="usource_event_headset__plug_any">Any</string>
+    <string name="usource_headset__with_microphone">With microphone?</string>
+    <string name="usource_headset__microphone_true">Yes</string>
+    <string name="usource_headset__microphone_false">No</string>
+    <string name="usource_headset__microphone_any">Any</string>
+
+    <string name="usource_screen">Screen Status</string>
+    <string name="usource_screen_text_screen_is">When screen is…</string>
+    <string name="usource_screen_on">On</string>
+    <string name="usource_screen_off">Off</string>
+    <string name="usource_screen_unlocked">Unlocked</string>
+
+    <string name="usource_time">Time</string>
+
+    <string name="usource_wificonn">Wi-Fi Connection</string>
+    <string name="usource_wificonn_select_dialog_title">Select Wi-Fi AP</string>
+    <string name="usource_wificonn_wait_for_result">Awaiting Wi-Fi scan result</string>
+
+    <string name="usource_wifi_enabled">WiFi Enabled</string>
+    <string name="usource_wifi_enabled_wifi_is_enabled">WiFi is enabled?</string>
 
 </resources>

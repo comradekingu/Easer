@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -22,32 +22,36 @@ package ryey.easer.core.ui.data;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 
 import ryey.easer.R;
-import ryey.easer.commons.local_plugin.InvalidDataInputException;
+import ryey.easer.commons.local_skill.InvalidDataInputException;
+import ryey.easer.commons.ui.CommonBaseActivity;
 import ryey.easer.core.data.Named;
 import ryey.easer.core.data.Verifiable;
 import ryey.easer.core.data.WithCreatedVersion;
 import ryey.easer.core.data.storage.AbstractDataStorage;
+import ryey.easer.core.data.storage.RequiredDataNotFoundException;
 
-abstract class AbstractEditDataActivity<T extends Named & Verifiable & WithCreatedVersion, T_storage extends AbstractDataStorage<T, ?>> extends AppCompatActivity {
+public abstract class AbstractEditDataActivity<T extends Named & Verifiable & WithCreatedVersion, T_storage extends AbstractDataStorage<T, ?>> extends CommonBaseActivity {
 
     protected static String TAG_DATA_TYPE = "<unspecified data type>";
 
+    @Nullable
     T_storage storage = null;
 
     EditDataProto.Purpose purpose;
-    String oldName = null;
+    protected String oldName = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -117,19 +121,18 @@ abstract class AbstractEditDataActivity<T extends Named & Verifiable & WithCreat
             setTitle(title());
             init();
             if (purpose == EditDataProto.Purpose.edit) {
-                T data = storage.get(oldName);
+                T data = null;
+                try {
+                    data = storage.get(oldName);
+                } catch (RequiredDataNotFoundException e) {
+                    throw new AssertionError(e);
+                }
                 loadFromData(data);
             }
         }
     }
 
-    abstract void init();
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        storage = null;
-    }
+    protected abstract void init();
 
     protected abstract void loadFromData(T data);
 

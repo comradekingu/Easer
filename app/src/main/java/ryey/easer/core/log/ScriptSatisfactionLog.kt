@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -57,15 +57,15 @@ class ScriptSatisfactionLog : BasicLog {
         return result
     }
 
-    override fun writeToParcel(parcel: Parcel, i: Int) {
-        super.writeToParcel(parcel, i)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        super.writeToParcel(parcel, flags)
         parcel.writeString(scriptName)
         parcel.writeByte(if (satisfaction) 1 else 0)
         parcel.writeString(profileName)
     }
 
     protected constructor(parcel: Parcel): super(parcel) {
-        scriptName = parcel.readString()
+        scriptName = parcel.readString()!!
         satisfaction = parcel.readByte() > 0
         profileName = parcel.readString()
     }

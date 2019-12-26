@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,10 +19,14 @@
 
 package ryey.easer.core.data;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArraySet;
 
-import ryey.easer.commons.local_plugin.dynamics.DynamicsLink;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
+import java.util.Set;
+
+import ryey.easer.commons.local_skill.dynamics.DynamicsLink;
+import ryey.easer.commons.local_skill.eventskill.EventData;
 
 /*
  * An Event consists of the following data:
@@ -33,7 +37,7 @@ import ryey.easer.commons.local_plugin.eventplugin.EventData;
  *
  * This class holds these fields and getters and setters.
  *
- * Only `EditScriptActivity` and `ScriptTree` needs to know the actual structure.
+ * Only `EditScriptActivity` and `LogicGraph` needs to know the actual structure (?)
  */
 final public class ScriptStructure implements Renameable, Verifiable, WithCreatedVersion {
     private final int createdVersion;
@@ -46,7 +50,7 @@ final public class ScriptStructure implements Renameable, Verifiable, WithCreate
     private boolean persistent = false;
     @Nullable private DynamicsLink dynamicsLink;
     @Nullable protected String profileName;
-    @Nullable protected String parentName;
+    @NonNull protected Set<String> predecessors = new ArraySet<>();
 
     public ScriptStructure(int createdVersion) {this.createdVersion = createdVersion;}
 
@@ -100,20 +104,22 @@ final public class ScriptStructure implements Renameable, Verifiable, WithCreate
         this.active = active;
     }
 
+    @Nullable
     public String getProfileName() {
         return profileName;
     }
 
-    public void setProfileName(String profileName) {
+    public void setProfileName(@Nullable String profileName) {
         this.profileName = profileName;
     }
 
-    public String getParentName() {
-        return parentName;
+    @NonNull
+    public Set<String> getPredecessors() {
+        return predecessors;
     }
 
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
+    public void setPredecessors(@NonNull Set<String> predecessors) {
+        this.predecessors = predecessors;
     }
 
     public boolean isValid() {

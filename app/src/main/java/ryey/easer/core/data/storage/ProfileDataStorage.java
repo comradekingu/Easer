@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,6 +21,8 @@ package ryey.easer.core.data.storage;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 import ryey.easer.core.data.ProfileStructure;
@@ -30,24 +32,15 @@ import ryey.easer.core.data.storage.backend.json.profile.JsonProfileDataStorageB
 
 public class ProfileDataStorage extends AbstractDataStorage<ProfileStructure, ProfileDataStorageBackendInterface> {
 
-    private static ProfileDataStorage instance = null;
-
-    Context context;
-
-    public static ProfileDataStorage getInstance(Context context) {
-        if (instance == null) {
-            instance = new ProfileDataStorage();
-            instance.storage_backend_list = new ProfileDataStorageBackendInterface[] {
-                    JsonProfileDataStorageBackend.getInstance(context),
-            };
-            instance.context = context;
-        }
-        return instance;
+    public ProfileDataStorage(@NonNull Context context) {
+        super(context, new ProfileDataStorageBackendInterface[] {
+                new JsonProfileDataStorageBackend(context),
+        });
     }
 
     @Override
-    boolean isSafeToDelete(String name) {
-        ScriptDataStorage scriptDataStorage = ScriptDataStorage.getInstance(context);
+    boolean isSafeToDelete(@NonNull String name) {
+        ScriptDataStorage scriptDataStorage = new ScriptDataStorage(context);
         for (ScriptStructure scriptStructure : scriptDataStorage.allScripts()) {
             if (name.equals(scriptStructure.getProfileName()))
                 return false;
@@ -56,8 +49,8 @@ public class ProfileDataStorage extends AbstractDataStorage<ProfileStructure, Pr
     }
 
     @Override
-    protected void handleRename(String oldName, ProfileStructure profile) throws IOException {
-        ScriptDataStorage scriptDataStorage = ScriptDataStorage.getInstance(context);
+    protected void handleRename(@NonNull String oldName, @NonNull ProfileStructure profile) throws IOException {
+        ScriptDataStorage scriptDataStorage = new ScriptDataStorage(context);
         for (String scriptName : scriptDataStorage.list()) {
             ScriptStructure script = scriptDataStorage.get(scriptName);
             if (oldName.equals(script.getProfileName())) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -110,7 +110,7 @@ class ActivityLogService : Service() {
 
         @Synchronized
         fun recordProfile(bundle: Bundle) {
-            val activityLog: ActivityLog = bundle.getParcelable(EXTRA_ACTIVITY_LOG)
+            val activityLog: ActivityLog = bundle.getParcelable(EXTRA_ACTIVITY_LOG)!!
             activityLogList.addLast(activityLog)
         }
 

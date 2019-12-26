@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,6 +21,9 @@ package ryey.easer.core.data.storage.backend.json.profile;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -28,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 import ryey.easer.core.data.ProfileStructure;
 import ryey.easer.core.data.storage.backend.FileDataStorageBackendHelper;
 import ryey.easer.core.data.storage.backend.IOUtils;
@@ -37,28 +40,20 @@ import ryey.easer.core.data.storage.backend.json.NC;
 
 public class JsonProfileDataStorageBackend implements ProfileDataStorageBackendInterface {
 
-    private static JsonProfileDataStorageBackend instance = null;
-    private static Context s_context = null;
+    private final Context context;
     private static File dir;
 
-    public static JsonProfileDataStorageBackend getInstance(Context context) {
-        if (instance == null) {
-            if (context != null)
-                s_context = context;
-            dir = IOUtils.mustGetSubDir(s_context.getFilesDir(), "profile");
-            instance = new JsonProfileDataStorageBackend();
-        }
-        return instance;
-    }
-
-    private JsonProfileDataStorageBackend() {
+    public JsonProfileDataStorageBackend(Context context) {
+        this.context = context;
+        dir = IOUtils.mustGetSubDir(context.getFilesDir(), "profile");
     }
 
     @Override
-    public boolean has(String name) {
+    public boolean has(@NonNull String name) {
         return IOUtils.fileExists(dir, name + NC.SUFFIX);
     }
 
+    @NonNull
     @Override
     public List<String> list() {
         ArrayList<String> list = new ArrayList<>();
@@ -68,10 +63,15 @@ public class JsonProfileDataStorageBackend implements ProfileDataStorageBackendI
         return list;
     }
 
+    @Nullable
     @Override
-    public ProfileStructure get(String name) throws FileNotFoundException, IllegalStorageDataException {
+    public ProfileStructure get(@NonNull String name) throws IllegalStorageDataException {
         File file = new File(dir, name + NC.SUFFIX);
-        return get(file);
+        try {
+            return get(file);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     private ProfileStructure get(File file) throws FileNotFoundException, IllegalStorageDataException {
@@ -81,19 +81,20 @@ public class JsonProfileDataStorageBackend implements ProfileDataStorageBackendI
     }
 
     @Override
-    public void write(ProfileStructure profile) throws IOException {
+    public void write(@NonNull ProfileStructure profile) throws IOException {
         File file = new File(dir, profile.getName() + NC.SUFFIX);
         ProfileSerializer serializer = new ProfileSerializer();
         FileDataStorageBackendHelper.write(serializer, file, profile);
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(@NonNull String name) {
         File file = new File(dir, name + NC.SUFFIX);
         if (!file.delete())
             throw new IllegalStateException("Unable to delete " + file);
     }
 
+    @NonNull
     @Override
     public List<ProfileStructure> all() {
         List<ProfileStructure> list = new ArrayList<>();

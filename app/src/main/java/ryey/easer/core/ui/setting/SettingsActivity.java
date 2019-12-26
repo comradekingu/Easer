@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -20,26 +20,34 @@
 package ryey.easer.core.ui.setting;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.preference.TwoStatePreference;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.orhanobut.logger.Logger;
+import com.zeugmasolutions.localehelper.LocaleHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,24 +57,57 @@ import java.util.Locale;
 
 import ryey.easer.BuildConfig;
 import ryey.easer.R;
-import ryey.easer.Utils;
-import ryey.easer.core.BootupReceiver;
+import ryey.easer.commons.ui.CommonBaseActivity;
+import ryey.easer.core.BootUpReceiver;
 import ryey.easer.core.EHService;
 import ryey.easer.core.UpgradeCompleteReceiver;
 import ryey.easer.core.data.Helper;
 import ryey.easer.core.data.InvalidExportedDataException;
 import ryey.easer.core.data.storage.StorageHelper;
 
-public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends CommonBaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String BS_NAME_PLUGIN_ENABLED = "bs_plugin_enabled";
+
+    private static final String ARG_PAGE = "ryey.easer.core.ui.setting.ARG.PAGE";
+    private static final int PAGE_DEFAULT = -1;
+    private static final int PAGE_SKILL = 1;
+
+    public static void callSkillSettings(Activity activity) {
+        Intent intent = new Intent(activity, SettingsActivity.class);
+        intent.putExtra(ARG_PAGE, PAGE_SKILL);
+        activity.startActivity(intent);
+    }
+
+    private static boolean hasPermission(Context context, String permission) {
+        if (ContextCompat.checkSelfPermission(context, permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, String.format(
+                    context.getString(R.string.prompt_prevented_for_permission), permission),
+                    Toast.LENGTH_LONG).show();
+            return false;
+        } else
+            return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+        setTitle(R.string.title_setting);
+        Bundle args = getIntent().getExtras();
+        int startPage = PAGE_DEFAULT;
+        if (args != null) {
+            startPage = args.getInt(ARG_PAGE, PAGE_DEFAULT);
+        }
+        switch (startPage) {
+            case PAGE_SKILL:
+                setSkillFragment(getFragmentManager(), false);
+                break;
+            default:
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment())
+                        .commit();
+        }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -84,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.key_pref_autostart))) {
-            ComponentName componentName = new ComponentName(this, BootupReceiver.class);
+            ComponentName componentName = new ComponentName(this, BootUpReceiver.class);
             PackageManager pm = getPackageManager();
             if (sharedPreferences.getBoolean(key, false)) {
                 pm.setComponentEnabledSetting(componentName,
@@ -119,6 +160,16 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         }
     }
 
+    static void setSkillFragment(FragmentManager fragmentManager, boolean addToBackStack) {
+        SkillSettingsPreferenceFragment fragment = new SkillSettingsPreferenceFragment();
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
+                .replace(android.R.id.content, fragment);
+        if (addToBackStack) {
+            transaction.addToBackStack(BS_NAME_PLUGIN_ENABLED);
+        }
+        transaction.commit();
+    }
+
     public static class SettingsFragment extends PreferenceFragment {
 
         final static int REQCODE_PICK_FILE = 10;
@@ -146,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             Preference pref_export = findPreference(getString(R.string.key_pref_export));
             pref_export.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    if (!Utils.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (!hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         ActivityCompat.requestPermissions(getActivity(),
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 REQCODE_PERM_EXPORT);
@@ -169,7 +220,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             pref_import.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    if (!Utils.hasPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    if (!hasPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             ActivityCompat.requestPermissions(getActivity(),
                                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -190,7 +241,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     if ((Boolean) newValue) {
-                        if (!Utils.hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (!hasPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                             Logger.i("Permission <%s> not granted. Requesting...",
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
                             ActivityCompat.requestPermissions(getActivity(),
@@ -228,11 +279,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    PluginSettingsPreferenceFragment fragment = new PluginSettingsPreferenceFragment();
-                    getFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, fragment)
-                            .addToBackStack(BS_NAME_PLUGIN_ENABLED)
-                            .commit();
+                    setSkillFragment(getFragmentManager(), true);
                     return true;
                 }
             });
@@ -247,6 +294,41 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     return true;
                 }
             });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                for (int key_id : new int[]{
+                        R.string.key_pref_show_notification,
+                        R.string.key_pref_foreground}) {
+                    Preference pref = findPreference(getString(key_id));
+                    pref.setEnabled(false);
+                    ((TwoStatePreference) pref).setChecked(true);
+                }
+            }
+
+            ((ListPreference) findPreference(getString(R.string.key_pref_locale_lang)))
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            String locale_str = (String) newValue;
+                            Locale locale;
+                            if ("_".equals(locale_str)) {
+                                locale = Resources.getSystem().getConfiguration().locale;
+                            } else if ("zh".equals(locale_str)) {
+                                locale = Locale.CHINESE;
+                            } else {
+                                locale = new Locale(locale_str);
+                            }
+                            Logger.d("Locale changing to %s, based on %s", locale, locale_str);
+                            Context context;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                context = getContext();
+                            } else {
+                                context = getActivity();
+                            }
+                            LocaleHelper.INSTANCE.setLocale(context, locale);
+                            return true;
+                        }
+                    });
 
         }
 

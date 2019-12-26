@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,53 +19,58 @@
 
 package ryey.easer.core.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
-import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.navigation.NavigationView;
+import com.zeugmasolutions.localehelper.LocaleHelperActivityDelegate;
+import com.zeugmasolutions.localehelper.LocaleHelperActivityDelegateImpl;
 
 import ryey.easer.R;
-import ryey.easer.core.data.storage.StorageHelper;
-import ryey.easer.core.ui.data.ConditionListFragment;
-import ryey.easer.core.ui.data.EventListFragment;
-import ryey.easer.core.ui.data.ProfileListFragment;
-import ryey.easer.core.ui.data.ScriptListFragment;
+import ryey.easer.commons.ui.CommonBaseActivity;
 import ryey.easer.core.ui.setting.SettingsActivity;
+import ryey.easer.core.ui.version_n_info.AboutActivity;
+import ryey.easer.core.ui.version_n_info.Info;
+import ryey.easer.core.ui.version_n_info.Version;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends CommonBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     private static final String FRAGMENT_OUTLINE = "ryey.easer.FRAGMENT.OUTLINE";
-    private static final String FRAGMENT_PROFILE = "ryey.easer.FRAGMENT.PROFILE";
-    private static final String FRAGMENT_SCRIPT = "ryey.easer.FRAGMENT.SCRIPT";
-    private static final String FRAGMENT_SCENARIO = "ryey.easer.FRAGMENT.SCENARIO";
-    private static final String FRAGMENT_CONDITION = "ryey.easer.FRAGMENT.CONDITION";
+    private static final String FRAGMENT_PIVOT = "ryey.easer.FRAGMENT.PIVOT";
+    private static final String FRAGMENT_DATA = "ryey.easer.FRAGMENT.DATA";
     private static final String FRAGMENT_LOG = "ryey.easer.FRAGMENT.LOG";
 
     private static final NavTag navTag = new NavTag();
 
+    private final LocaleHelperActivityDelegate localeDelegate = new LocaleHelperActivityDelegateImpl();
+
+    @Override
+    protected void attachBaseContext(@NonNull Context newBase) {
+        super.attachBaseContext(localeDelegate.attachBaseContext(newBase));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localeDelegate.onCreate(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -90,42 +95,26 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
-        // Show Welcome page at first launch
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.key_pref_welcome), true)) {
-            ((TextView) new AlertDialog.Builder(this)
-                    .setTitle(R.string.title_welcome_message)
-                    .setMessage(R.string.welcome_message)
-                    .setPositiveButton(R.string.button_understand, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
-                                    .edit()
-                                    .putBoolean(getString(R.string.key_pref_welcome), false)
-                                    .apply();
-                        }
-                    })
-                    .setNegativeButton(R.string.button_read_next_time, null)
-                    .show()
-                    .findViewById(android.R.id.message))
-                    .setMovementMethod(LinkMovementMethod.getInstance());
-        }
-
-        if (StorageHelper.hasOldData(this)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.alert_update_storage_data_title)
-                    .setMessage(R.string.alert_update_storage_data)
-                    .setPositiveButton(R.string.button_understand, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    })
-                    .show();
-        }
+        Info.INSTANCE.welcome(this);
+        Version.INSTANCE.dataVersionChange(this);
+        Version.INSTANCE.nearFutureChange(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        localeDelegate.onPaused();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        localeDelegate.onResumed(this);
     }
 
     @Override
@@ -156,6 +145,8 @@ public class MainActivity extends AppCompatActivity
         String tag = navTag.findTag(id);
         String bs_tag = tag;
 
+        invalidateOptionsMenu();
+
         if (id == R.id.nav_outline) {
             fragment = manager.findFragmentByTag(tag);
             if (fragment == null)
@@ -164,34 +155,18 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_main, fragment, tag)
                     .addToBackStack(bs_tag)
                     .commit();
-        } else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_pivot) {
             fragment = manager.findFragmentByTag(tag);
             if (fragment == null)
-                fragment = new ProfileListFragment();
+                fragment = new PivotFragment();
             manager.beginTransaction()
                     .replace(R.id.content_main, fragment, tag)
                     .addToBackStack(bs_tag)
                     .commit();
-        } else if (id == R.id.nav_script) {
+        } else if (id == R.id.nav_data) {
             fragment = manager.findFragmentByTag(tag);
             if (fragment == null)
-                fragment = new ScriptListFragment();
-            manager.beginTransaction()
-                    .replace(R.id.content_main, fragment, tag)
-                    .addToBackStack(bs_tag)
-                    .commit();
-        } else if (id == R.id.nav_scenario) {
-            fragment = manager.findFragmentByTag(tag);
-            if (fragment == null)
-                fragment = new EventListFragment();
-            manager.beginTransaction()
-                    .replace(R.id.content_main, fragment, tag)
-                    .addToBackStack(bs_tag)
-                    .commit();
-        } else if (id == R.id.nav_condition) {
-            fragment = manager.findFragmentByTag(tag);
-            if (fragment == null)
-                fragment = new ConditionListFragment();
+                fragment = new DataCollectionFragment();
             manager.beginTransaction()
                     .replace(R.id.content_main, fragment, tag)
                     .addToBackStack(bs_tag)
@@ -216,18 +191,14 @@ public class MainActivity extends AppCompatActivity
     private static class NavTag {
         private static final int[] nav_ids = {
                 R.id.nav_outline,
-                R.id.nav_script,
-                R.id.nav_profile,
-                R.id.nav_scenario,
-                R.id.nav_condition,
+                R.id.nav_pivot,
+                R.id.nav_data,
                 R.id.nav_log,
         };
         private static final String[] fragment_tags = {
                 FRAGMENT_OUTLINE,
-                FRAGMENT_SCRIPT,
-                FRAGMENT_PROFILE,
-                FRAGMENT_SCENARIO,
-                FRAGMENT_CONDITION,
+                FRAGMENT_PIVOT,
+                FRAGMENT_DATA,
                 FRAGMENT_LOG,
         };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -28,79 +28,83 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.ConditionVariable;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import ryey.easer.core.data.ScriptTree;
+import ryey.easer.core.data.LogicGraph;
 import ryey.easer.core.data.storage.ScriptDataStorage;
 import ryey.easer.core.log.ActivityLogService;
 
-/*
- * The background service which maintains several Lotus(es) and send Intent to load Profile(s).
+/**
+ * The main background service.
+ * It maintains several {@link Lotus}(es) and send Intent to load Profile(s) & etc.
  */
-public class EHService extends Service {
+public class EHService extends Service implements CoreServiceComponents.LogicManager {
     public static final String ACTION_RELOAD = "ryey.easer.action.RELOAD";
 
     public static final String ACTION_STATE_CHANGED = "ryey.easer.action.STATE_CHANGED";
     public static final String ACTION_PROFILE_UPDATED = "ryey.easer.action.PROFILE_UPDATED";
 
-    private static final String ACTION_UNREGISTER_CONDITION_EVENT = "ryey.easer.service.action.UNREGISTER_CONDITION_EVENT";
-    private static final String ACTION_REGISTER_CONDITION_EVENT = "ryey.easer.service.action.REGISTER_CONDITION_EVENT";
-    private static final String EXTRA_CONDITION_NAME = "ryey.easer.service.extra.CONDITION_NAME";
-    private static final String EXTRA_NOTIFY_DATA = "ryey.easer.service.extra.NOTIFY_DATA";
-    private static final IntentFilter filter_conditionEvent;
-    static {
-        filter_conditionEvent = new IntentFilter();
-        filter_conditionEvent.addAction(ACTION_REGISTER_CONDITION_EVENT);
-        filter_conditionEvent.addAction(ACTION_UNREGISTER_CONDITION_EVENT);
-    }
-    public static void registerConditionEventNotifier(@NonNull Context context, @NonNull String conditionName, @NonNull Uri notifyData) {
-        Intent intent = new Intent(ACTION_REGISTER_CONDITION_EVENT);
-        intent.putExtra(EXTRA_CONDITION_NAME, conditionName);
-        intent.putExtra(EXTRA_NOTIFY_DATA, notifyData);
-        context.sendBroadcast(intent);
-        //TODO local broadcast
-    }
-    public static void unregisterConditionEventNotifier(@NonNull Context context, @NonNull String conditionName, @NonNull Uri notifyData) {
-        Intent intent = new Intent(ACTION_UNREGISTER_CONDITION_EVENT);
-        intent.putExtra(EXTRA_CONDITION_NAME, conditionName);
-        intent.putExtra(EXTRA_NOTIFY_DATA, notifyData);
-        context.sendBroadcast(intent);
-        //TODO local broadcast
-    }
-
     private static final String TAG = "[EHService] ";
     private static final String SERVICE_NAME = "Easer";
 
-    List<Lotus> mLotusArray = new ArrayList<>();
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    /**
+     * NEW
+     * key: Script (node) name
+     * value: lotus
+     */
+    Map<String, CountedLotus> lotusMap = new HashMap<>(); //TODO: merge into LogicGraph ?
+    LogicGraph logicGraph;
 
-    ConditionHolderService.CHBinder conditionHolderBinder;
-    private final ConditionVariable cv = new ConditionVariable();
+    /**
+     * Necessary objects for the correct functioning of EHService.
+     * {@link #jobCH} is for calling functions from {@link ConditionHolderService}
+     * {@link #jobLP} is for calling functions from {@link ProfileLoaderService}
+     */
+    private final CoreServiceComponents.DelayedConditionHolderBinderJobs jobCH = new CoreServiceComponents.DelayedConditionHolderBinderJobs();
+    private final AsyncHelper.DelayedLoadProfileJobs jobLP = new AsyncHelper.DelayedLoadProfileJobs();
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Logger.v(TAG + "onServiceConnected");
-            conditionHolderBinder = (ConditionHolderService.CHBinder) iBinder;
-            cv.open();
-            mSetTriggers();
+            Logger.v("%s onServiceConnected: %s", TAG, componentName);
+            if (componentName.getClassName().equals(ConditionHolderService.class.getName())) {
+                jobCH.onBind((ConditionHolderService.CHBinder) iBinder);
+                jobCH.doAfter(() -> {
+                    mSetTriggers();
+                    return null;
+                });
+            } else if (componentName.getClassName().equals(ProfileLoaderService.class.getName())) {
+                jobLP.onBind((ProfileLoaderService.PLSBinder) iBinder);
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            Logger.v(TAG + "onServiceDisconnected");
-            cv.close();
-            conditionHolderBinder = null;
+            Logger.v("%s onServiceDisconnected: %s", TAG, componentName);
+            if (componentName.getClassName().equals(ConditionHolderService.class.getName())) {
+                jobCH.onUnbind();
+            } else if (componentName.getClassName().equals(ProfileLoaderService.class.getName())) {
+                jobLP.onUnbind();
+            }
         }
     };
+
+    private final CoreServiceComponents.CoreSkillHelper coreSkillHelper = new CoreServiceComponents.CoreSkillHelper(this, jobCH);
+    public static void registerConditionEventNotifier(@NonNull Context context, @NonNull String conditionName, @NonNull Uri notifyData) {
+        CoreServiceComponents.CoreSkillHelper.registerConditionEventNotifier(context, conditionName, notifyData);
+    }
+    public static void unregisterConditionEventNotifier(@NonNull Context context, @NonNull String conditionName, @NonNull Uri notifyData) {
+        CoreServiceComponents.CoreSkillHelper.unregisterConditionEventNotifier(context, conditionName, notifyData);
+    }
 
     final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -109,14 +113,6 @@ public class EHService extends Service {
             Logger.d("Broadcast received :: action: <%s>", action);
             if (ACTION_RELOAD.equals(action)) {
                 reloadTriggers();
-            } else if (ACTION_REGISTER_CONDITION_EVENT.equals(intent.getAction()) || ACTION_UNREGISTER_CONDITION_EVENT.equals(intent.getAction())) {
-                String conditionName = intent.getStringExtra(EXTRA_CONDITION_NAME);
-                Uri notifyData = intent.getParcelableExtra(EXTRA_NOTIFY_DATA);
-                requireCHService(TAG);
-                if (ACTION_REGISTER_CONDITION_EVENT.equals(intent.getAction()))
-                    conditionHolderBinder.registerAssociation(conditionName, notifyData);
-                else
-                    conditionHolderBinder.unregisterAssociation(conditionName, notifyData);
             }
         }
     };
@@ -129,7 +125,7 @@ public class EHService extends Service {
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EHService.class);
-        context.startService(intent);
+        ContextCompat.startForegroundService(context, intent);
     }
 
     public static void stop(Context context) {
@@ -140,22 +136,24 @@ public class EHService extends Service {
     public static void reload(Context context) {
         Intent intent = new Intent();
         intent.setAction(EHService.ACTION_RELOAD);
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     @Override
     public void onCreate() {
         Logger.v(TAG + "onCreate()");
         super.onCreate();
+        ServiceUtils.Companion.startNotification(this);
         ActivityLogService.Companion.notifyServiceStatus(this, SERVICE_NAME, true, null);
         bindService(new Intent(this, ConditionHolderService.class), connection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, ProfileLoaderService.class), connection, Context.BIND_AUTO_CREATE);
         running = true;
         Intent intent = new Intent(ACTION_STATE_CHANGED);
         sendBroadcast(intent);
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_RELOAD);
-        registerReceiver(mReceiver, filter);
-        registerReceiver(mReceiver, filter_conditionEvent);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
+        coreSkillHelper.onCreate();
         Logger.i(TAG + "created");
     }
 
@@ -163,9 +161,11 @@ public class EHService extends Service {
     public void onDestroy() {
         Logger.v(TAG + "onDestroy");
         super.onDestroy();
+        ServiceUtils.Companion.stopNotification(this);
         ActivityLogService.Companion.notifyServiceStatus(this, SERVICE_NAME, false, null);
         mCancelTriggers();
-        unregisterReceiver(mReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
+        coreSkillHelper.onDestroy();
         unbindService(connection);
         running = false;
         Intent intent = new Intent(ACTION_STATE_CHANGED);
@@ -174,45 +174,49 @@ public class EHService extends Service {
     }
 
     private void reloadTriggers() {
-        Logger.v(TAG + "reloadTriggers()");
-        conditionHolderBinder.reload();
-        if (mLotusArray.size() > 0)
-            mCancelTriggers();
-        mSetTriggers();
-        Logger.d(TAG + "triggers reloaded");
+        Logger.v(TAG + "reloadTriggers(): setting job");
+        jobCH.doAfter(binder -> {
+            Logger.v(TAG + "triggers reloading");
+            binder.reload();
+            for (LogicGraph.LogicNode node : logicGraph.initialNodes()) {
+                CountedLotus countedLotus = lotusMap.get(node.id);
+                if (countedLotus != null && countedLotus.getCount() > 0) {
+                    mCancelTriggers();
+                    break;
+                }
+            }
+            mSetTriggers();
+            Logger.d(TAG + "triggers reloaded");
+        });
     }
 
     private void mCancelTriggers() {
-        for (Lotus lotus : mLotusArray) {
-            lotus.cancel();
-        }
-        mLotusArray.clear();
-        requireCHService(TAG);
-        conditionHolderBinder.clearAssociation();
+        jobCH.doAfter(binder -> {
+            for (LogicGraph.LogicNode node : logicGraph.initialNodes()) {
+                CountedLotus countedLotus = lotusMap.get(node.id);
+                if (countedLotus != null && countedLotus.getCount() > 0) {
+                    countedLotus.decCount();
+                }
+            }
+            lotusMap.clear();
+
+            binder.clearAssociation();
+        });
     }
 
     private void mSetTriggers() {
         final String TAG = "[EHService:mSetTriggers] ";
         Logger.v(TAG + "setting triggers");
-        ScriptDataStorage storage = ScriptDataStorage.getInstance(this);
-        List<ScriptTree> scriptTreeList = storage.getScriptTrees();
-        requireCHService(TAG);
-        for (ScriptTree script : scriptTreeList) { //TODO?: Move this to `FakeRootLotus`
-            Logger.v(TAG + "setting trigger for <%s>", script.getName());
-            if (script.isActive()) {
-                Lotus lotus = Lotus.createLotus(this, script, executorService, conditionHolderBinder);
-                lotus.listen();
-                Logger.v(TAG + "trigger for event <%s> is set", script.getName());
-                mLotusArray.add(lotus);
+        ScriptDataStorage storage = new ScriptDataStorage(this);
+        logicGraph = storage.getLogicGraph();
+        for (LogicGraph.LogicNode node : logicGraph.initialNodes()) {
+            Logger.v(TAG + "setting trigger for <%s>", node.id);
+            if (node.active) {
+                activate(node);
+                Logger.v(TAG + "trigger for script node <%s> is set", node.id);
             }
         }
         Logger.d(TAG + "triggers have been set");
-    }
-
-    private void requireCHService(String TAG) {
-        Logger.v(TAG + "waiting for ConditionVariable for CHBinder");
-        cv.block();
-        Logger.v(TAG + "ConditionVariable for CHBinder met");
     }
 
     @Override
@@ -220,33 +224,106 @@ public class EHService extends Service {
         return new EHBinder();
     }
 
+    @Override
+    public void activate(LogicGraph.LogicNode node) {
+        CountedLotus countedLotus = lotusMap.get(node.id);
+        if (countedLotus == null) {
+            countedLotus = new CountedLotus(Lotus.createLotus(this, node, this, jobCH, jobLP));
+            lotusMap.put(node.id, countedLotus);
+        }
+        countedLotus.incCount();
+    }
+
+    @Override
+    public void deactivate(LogicGraph.LogicNode node) {
+        CountedLotus countedLotus = lotusMap.get(node.id);
+        if (countedLotus != null)
+            countedLotus.decCount();
+    }
+
+    @Override
+    public void activateSuccessors(LogicGraph.LogicNode node) {
+        Set<LogicGraph.LogicNode> successors = logicGraph.successors(node);
+        if (successors != null) {
+            for (LogicGraph.LogicNode successor : successors) {
+                if (successor.active)
+                    activate(successor);
+            }
+        }
+    }
+
+    @Override
+    public void deactivateSuccessors(LogicGraph.LogicNode node) {
+        Set<LogicGraph.LogicNode> successors = logicGraph.successors(node);
+        if (successors != null) {
+            for (LogicGraph.LogicNode successor : successors) {
+                if (successor.active)
+                    deactivate(successor);
+            }
+        }
+    }
+
     public class EHBinder extends Binder {
         /**
-         * Change the status of an event (by operating on its Lotus).
+         * Change the status of a Script node (by operating on its Lotus).
          * The change is guaranteed to be success if the Lotus exists.
-         * @param eventName
+         * TODO: Move to {@link CoreServiceComponents.CoreSkillHelper}
+         * @param scriptName
          * @param status currently {@code false} only
          * @return {@code true} if this event is listening; {@code false} otherwise
          */
-        public boolean setLotusStatus(String eventName, boolean status) {
-            for (Lotus lotus : mLotusArray) {
-                if (setLotusStatus_real(lotus, eventName, status))
-                    return true;
-            }
-            return false;
+        public boolean setLotusStatus(String scriptName, boolean status) {
+            CountedLotus countedLotus = lotusMap.get(scriptName);
+            if (countedLotus == null)
+                return false;
+            countedLotus.setLotusStatus(status);
+            return true;
         }
 
-        private boolean setLotusStatus_real(Lotus lotus, String eventName, boolean status) {
-            if (lotus.scriptName().equals(eventName)) {
-                lotus.setStatus(status);
-                return true;
-            } else {
-                for (Lotus sub : lotus.subs) {
-                    if (setLotusStatus_real(sub, eventName, status))
-                        return true;
+        public Map<String, Boolean> lotusStatusMap() {
+            Map<String, Boolean> statusMap = new HashMap<>(lotusMap.size());
+            for (Map.Entry<String, CountedLotus> entry : lotusMap.entrySet()) {
+                if (entry.getValue().getCount() > 0) {
+                    statusMap.put(entry.getKey(), entry.getValue().getLotusStatus());
                 }
             }
-            return false;
+            return statusMap;
+        }
+    }
+
+    public static class CountedLotus {
+
+        private int count = 0;
+        private Lotus object;
+
+        public CountedLotus(Lotus lotus) {
+            this.object = lotus;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void incCount() {
+            count++;
+            if (count == 1) {
+                object.listen();
+            }
+        }
+
+        public void decCount() {
+            count--;
+            if (count == 0) {
+                object.cancel();
+            }
+        }
+
+        public void setLotusStatus(boolean status) {
+            object.setStatus(status);
+        }
+
+        public boolean getLotusStatus() {
+            return object.status();
         }
     }
 

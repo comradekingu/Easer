@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -24,29 +24,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
+import androidx.collection.ArraySet;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.orhanobut.logger.Logger;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
-import ryey.easer.commons.local_plugin.dynamics.DynamicsLink;
-import ryey.easer.commons.local_plugin.dynamics.SolidDynamicsAssignment;
-import ryey.easer.commons.local_plugin.operationplugin.Loader;
-import ryey.easer.commons.local_plugin.operationplugin.OperationData;
-import ryey.easer.commons.local_plugin.operationplugin.OperationPlugin;
+import ryey.easer.commons.local_skill.dynamics.DynamicsLink;
+import ryey.easer.commons.local_skill.dynamics.SolidDynamicsAssignment;
 import ryey.easer.core.data.ProfileStructure;
 import ryey.easer.core.data.RemoteLocalOperationDataWrapper;
 import ryey.easer.core.data.storage.ProfileDataStorage;
+import ryey.easer.core.data.storage.RequiredDataNotFoundException;
 import ryey.easer.core.dynamics.CoreDynamics;
 import ryey.easer.core.dynamics.CoreDynamicsInterface;
 import ryey.easer.core.log.ActivityLogService;
-import ryey.easer.plugins.PluginRegistry;
-import ryey.easer.remote_plugin.RemoteOperationData;
 
 import static ryey.easer.core.Lotus.EXTRA_DYNAMICS_LINK;
 import static ryey.easer.core.Lotus.EXTRA_DYNAMICS_PROPERTIES;
@@ -57,24 +62,7 @@ public class ProfileLoaderService extends Service {
     public static final String EXTRA_PROFILE_NAME = "ryey.easer.extra.PROFILE_NAME";
     public static final String EXTRA_SCRIPT_NAME = "ryey.easer.extra.EVENT_NAME";
 
-    public static void triggerProfile(Context context, String profileName) {
-        Intent intent = new Intent();
-        intent.setAction(ProfileLoaderService.ACTION_LOAD_PROFILE);
-        intent.putExtra(ProfileLoaderService.EXTRA_PROFILE_NAME, profileName);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-    public static void triggerProfile(Context context, String profileName, String scriptName,
-                                      Bundle dynamicsProperties, DynamicsLink dynamicsLink) {
-        Intent intent = new Intent();
-        intent.setAction(ProfileLoaderService.ACTION_LOAD_PROFILE);
-        intent.putExtra(ProfileLoaderService.EXTRA_PROFILE_NAME, profileName);
-        intent.putExtra(ProfileLoaderService.EXTRA_SCRIPT_NAME, scriptName);
-        intent.putExtra(EXTRA_DYNAMICS_PROPERTIES, dynamicsProperties);
-        intent.putExtra(EXTRA_DYNAMICS_LINK, dynamicsLink);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    private RemotePluginCommunicationHelper helper;
+    private SkillHelper.OperationHelper helper;
 
     private IntentFilter intentFilter = new IntentFilter(ACTION_LOAD_PROFILE);
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -99,12 +87,14 @@ public class ProfileLoaderService extends Service {
     public void onCreate() {
         Logger.v("ProfileLoaderService onCreate()");
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
-        helper = new RemotePluginCommunicationHelper(this);
+        helper = new SkillHelper.OperationHelper(this);
         helper.begin();
+        ServiceUtils.Companion.startNotification(this);
     }
 
     @Override
     public void onDestroy() {
+        ServiceUtils.Companion.stopNotification(this);
         helper.end();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
@@ -112,14 +102,38 @@ public class ProfileLoaderService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new PLSBinder();
+    }
+
+    public class PLSBinder extends Binder {
+        public void triggerProfile(String profileName) {
+            Bundle extras = new Bundle();
+            extras.putString(ProfileLoaderService.EXTRA_PROFILE_NAME, profileName);
+            handleActionLoadProfile(profileName, null, extras);
+        }
+        public void triggerProfile(String profileName, String scriptName,
+                                          Bundle dynamicsProperties, DynamicsLink dynamicsLink) {
+            Bundle extras = new Bundle();
+            extras.putString(ProfileLoaderService.EXTRA_PROFILE_NAME, profileName);
+            extras.putString(ProfileLoaderService.EXTRA_SCRIPT_NAME, scriptName);
+            if (dynamicsProperties.containsKey(EXTRA_DYNAMICS_PROPERTIES)) //TODO: Make the semantics better so this if condition is not needed
+                extras.putAll(dynamicsProperties);
+            else
+                extras.putParcelable(EXTRA_DYNAMICS_PROPERTIES, dynamicsProperties);
+            extras.putParcelable(EXTRA_DYNAMICS_LINK, dynamicsLink);
+            handleActionLoadProfile(profileName, scriptName, extras);
+        }
     }
 
     private void handleActionLoadProfile(@NonNull String name, @Nullable String event, @NonNull Bundle extras) {
         Logger.d("Loading profile <%s> by <%s>", name, event);
         ProfileStructure profile;
-        ProfileDataStorage storage = ProfileDataStorage.getInstance(this);
-        profile = storage.get(name);
+        ProfileDataStorage storage = new ProfileDataStorage(this);
+        try {
+            profile = storage.get(name);
+        } catch (RequiredDataNotFoundException e) {
+            throw new AssertionError(e);
+        }
 
         DynamicsLink dynamicsLink = extras.getParcelable(EXTRA_DYNAMICS_LINK);
         Bundle macroData = extras.getBundle(EXTRA_DYNAMICS_PROPERTIES);
@@ -134,46 +148,125 @@ public class ProfileLoaderService extends Service {
         }
         final SolidDynamicsAssignment solidMacroAssignment = dynamicsLink.assign(macroData);
 
-        if (profile != null) {
-            boolean loaded = false;
-            PluginRegistry.Registry<OperationPlugin, OperationData> operationRegistry = PluginRegistry.getInstance().operation();
-            for (String pluginId : profile.pluginIds()) {
-                Collection<RemoteLocalOperationDataWrapper> dataCollection = profile.get(pluginId);
-                if (operationRegistry.hasPlugin(pluginId)) {
-                    OperationPlugin plugin = operationRegistry.findPlugin(pluginId);
-                    assert plugin != null;
-                    Loader loader = plugin.loader(getApplicationContext());
-                    for (RemoteLocalOperationDataWrapper data : dataCollection) {
-                        OperationData localData = data.localData;
-                        assert localData != null;
-                        try {
-                            //noinspection unchecked
-                            if (loader.load(localData.applyDynamics(solidMacroAssignment)))
-                                loaded = true;
-                        } catch (RuntimeException e) {
-                            Logger.e(e, "error while loading operation <%s> for profile <%s>", data.getClass().getSimpleName(), profile.getName());
-                        }
-                    }
-                } else {
-                    for (RemoteLocalOperationDataWrapper data : dataCollection) {
-                        RemoteOperationData remoteData = data.remoteData;
-                        helper.asyncTriggerOperation(pluginId, remoteData);
-                    }
+        LoadWatcher profileLoadWatcher = new LoadWatcher(this, name, event);
+
+        new Thread(profileLoadWatcher).start();
+
+        for (String pluginId : profile.pluginIds()) {
+            Collection<RemoteLocalOperationDataWrapper> dataWrappers = profile.get(pluginId);
+            for (RemoteLocalOperationDataWrapper dataWrapper : dataWrappers) {
+                UUID jobId = UUID.randomUUID();
+                profileLoadWatcher.addJob(jobId, pluginId);
+                helper.triggerOperation(jobId, pluginId, dataWrapper, solidMacroAssignment, profileLoadWatcher);
+            }
+        }
+        profileLoadWatcher.finishInit();
+    }
+
+    /**
+     * Self-made concurrent task counter
+     * There ought to be existing classes for this purpose, but I didn't find any.
+     * TODO: replace with existing class
+     */
+    class LoadWatcher implements Runnable, SkillHelper.OperationHelper.OnOperationLoadResultCallback {
+
+        private final Context context;
+        private final String name;
+        private final String event;
+
+        private final Map<UUID, String> jobMap = new ArrayMap<>();
+        private final Set<String> failedSkills = new ArraySet<>();
+        private final Set<String> unknownSkills = new ArraySet<>();
+
+        private final ReentrantLock lock = new ReentrantLock();
+        private final AtomicInteger taskCount = new AtomicInteger();
+        private final AtomicInteger finishedCount = new AtomicInteger();
+
+        LoadWatcher(Context context, String name, String event) {
+            this.context = context;
+            this.name = name;
+            this.event = event;
+            lock.lock();
+        }
+
+        @Override
+        public void run() {
+            lock.lock();
+            try {
+            } finally {
+                lock.unlock();
+            } // Check if initialization has completed
+            while (finishedCount.get() < taskCount.get()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-            String extraInfo;
-            if (loaded) {
-                extraInfo = null;
-                Logger.i("Profile <%s> loaded", name);
-            } else {
-                extraInfo = "Profile failed to load in full";
-                Logger.w("Profile <%s> not loaded (none of the operations successfully loaded", name);
+            allResultsCollected();
+        }
+
+        @Override
+        public void onResult(@NonNull UUID id, @Nullable Boolean success) {
+            String skillId = jobMap.get(id);
+            if (skillId != null) {
+                lock.lock();
+                try {
+                    jobMap.remove(id);
+                    if (success == null) {
+                        unknownSkills.add(skillId);
+                    } else if (!success) {
+                        failedSkills.add(skillId);
+                    }
+                    finishedCount.incrementAndGet();
+                } finally {
+                    lock.unlock();
+                }
             }
-            if (event == null) {
-                ActivityLogService.Companion.notifyProfileLoaded(this, name, extraInfo);
-            } else {
-                ActivityLogService.Companion.notifyScriptSatisfied(this, event, name, extraInfo);
+        }
+
+        void addJob(UUID jobId, String pluginId) {
+            jobMap.put(jobId, pluginId);
+            taskCount.incrementAndGet();
+        }
+
+        void finishInit() {
+            lock.unlock();
+        }
+
+        private void allResultsCollected() {
+            lock.lock(); // Ensure no onResult() is running
+            try {
+                StringBuilder extraInfoBuilder = new StringBuilder();
+                if (unknownSkills.size() == 0 && failedSkills.size() == 0) {
+                    Logger.i("Profile <%s> loaded", name);
+                } else {
+                    if (unknownSkills.size() > 0) {
+                        extraInfoBuilder.append("Unknown results from skills:");
+                        for (String id : unknownSkills) {
+                            extraInfoBuilder.append(" ").append(id);
+                        }
+                        extraInfoBuilder.append("\n");
+                        Logger.i("Profile <%s> has unidentified Operation load results", name);
+                    }
+                    if (failedSkills.size() > 0) {
+                        extraInfoBuilder.append("Failed:");
+                        for (String id : failedSkills) {
+                            extraInfoBuilder.append(" ").append(id);
+                        }
+                        Logger.w("Profile <%s> has Operations failed to load", name);
+                    }
+                }
+                String extraInfo = extraInfoBuilder.toString();
+                if (event == null) {
+                    ActivityLogService.Companion.notifyProfileLoaded(context, name, extraInfo);
+                } else {
+                    ActivityLogService.Companion.notifyScriptSatisfied(context, event, name, extraInfo);
+                }
+            } finally {
+                lock.unlock();
             }
         }
     }
+
 }

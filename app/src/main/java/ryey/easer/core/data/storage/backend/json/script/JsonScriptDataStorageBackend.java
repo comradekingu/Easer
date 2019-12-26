@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,6 +21,9 @@ package ryey.easer.core.data.storage.backend.json.script;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -28,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 import ryey.easer.core.data.ScriptStructure;
 import ryey.easer.core.data.storage.backend.FileDataStorageBackendHelper;
 import ryey.easer.core.data.storage.backend.IOUtils;
@@ -37,28 +40,20 @@ import ryey.easer.core.data.storage.backend.json.NC;
 
 public class JsonScriptDataStorageBackend implements ScriptDataStorageBackendInterface {
 
-    private static JsonScriptDataStorageBackend instance = null;
-    private static Context s_context = null;
+    private final Context context;
     private static File dir;
 
-    public static JsonScriptDataStorageBackend getInstance(Context context) {
-        if (instance == null) {
-            if (context != null)
-                s_context = context;
-            dir = IOUtils.mustGetSubDir(s_context.getFilesDir(), "script");
-            instance = new JsonScriptDataStorageBackend();
-        }
-        return instance;
-    }
-
-    private JsonScriptDataStorageBackend() {
+    public JsonScriptDataStorageBackend(Context context) {
+        this.context = context;
+        dir = IOUtils.mustGetSubDir(context.getFilesDir(), "script");
     }
 
     @Override
-    public boolean has(String name) {
+    public boolean has(@NonNull String name) {
         return IOUtils.fileExists(dir, name + NC.SUFFIX);
     }
 
+    @NonNull
     @Override
     public List<String> list() {
         ArrayList<String> list = new ArrayList<>();
@@ -68,26 +63,31 @@ public class JsonScriptDataStorageBackend implements ScriptDataStorageBackendInt
         return list;
     }
 
+    @Nullable
     @Override
-    public ScriptStructure get(String name) throws FileNotFoundException, IllegalStorageDataException {
+    public ScriptStructure get(@NonNull String name) throws IllegalStorageDataException {
         File file = new File(dir, name + NC.SUFFIX);
-        return get(file);
+        try {
+            return get(file);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     private ScriptStructure get(File file) throws FileNotFoundException, IllegalStorageDataException {
-        ScriptParser parser = new ScriptParser(s_context);
+        ScriptParser parser = new ScriptParser(context);
         return FileDataStorageBackendHelper.get(parser, file);
     }
 
     @Override
-    public void write(ScriptStructure event) throws IOException {
+    public void write(@NonNull ScriptStructure event) throws IOException {
         File file = new File(dir, event.getName() + NC.SUFFIX);
         ScriptSerializer serializer = new ScriptSerializer();
         FileDataStorageBackendHelper.write(serializer, file, event);
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(@NonNull String name) {
         File file = new File(dir, name + NC.SUFFIX);
         if (!file.delete())
             throw new IllegalStateException("Unable to delete file " + file);
@@ -99,6 +99,7 @@ public class JsonScriptDataStorageBackend implements ScriptDataStorageBackendInt
         write(event);
     }
 
+    @NonNull
     @Override
     public List<ScriptStructure> all() {
         List<ScriptStructure> list = new ArrayList<>();

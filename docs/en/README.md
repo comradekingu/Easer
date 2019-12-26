@@ -8,9 +8,9 @@ Introduction
 -----
 Make your smart phone smarter: tell it what to do under different situations.
 
-### Smart automation
+### Smart by user-defined explicit automation
 
-Easer is an event-driven Android automation tool. It knows various events (see below) and YOU (the user) tell it what to do on what events (you can even combine multiple events). Thus, you no longer need to manually perform routine actions, or worry about forgetting to perform them.
+Easer provides your with *explicit automation*. It knows various events (see below) and YOU (the user) tell it what to do on what events (you can even combine multiple events). Thus, you no longer need to manually perform routine actions, or worry about forgetting to perform them.
 
 More than that, Easer can not only handle *Events*, but also check for *Conditions*. This makes things simpler when they can't be seens as Events, and makes it more intuitive.
 
@@ -51,8 +51,10 @@ Examples
 Supported functions
 --------
 Easer supports listening to many Android events (e.g. date/time, system status, calendar). The supported operations include, but are not limited to, changing Android settings, sending messages, and executing commands.
+Easer is gradually supporting *Remote Skill* (*Plugin*)*; currently only *Remote Operation Plugin*.
 
 For a list of current features, see [this page](https://renyuneyun.github.io/Easer/en/FEATURES).
+For an (incomplete) list of *Plugins*, see [here](https://github.com/topics/easer-plugin).
 
 Support Easer
 ------
@@ -69,7 +71,7 @@ Any amount of help is appreciated.
 
 Proud to be open-source
 ------
-Copyright (c) 2016 - 2018 Rui Zhao (renyuneyun) <renyuneyun@gmail.com>
+Copyright (c) 2016 - 2019 Rui Zhao (renyuneyun) <renyuneyun@gmail.com>
 
 Unless otherwise stated, Easer is licensed under GPLv3+ (See LICENSE)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,11 +19,11 @@
 
 package ryey.easer.core.ui.data;
 
-final class EditDataProto {
-    static final String CONTENT_NAME = "ryey.easer.EVENT.NAME";
-    static final String PURPOSE = "ryey.easer.PURPOSE";
+public final class EditDataProto {
+    public static final String CONTENT_NAME = "ryey.easer.EVENT.NAME";
+    public static final String PURPOSE = "ryey.easer.PURPOSE";
 
-    enum Purpose {
+    public enum Purpose {
         add, edit, delete
     }
 }

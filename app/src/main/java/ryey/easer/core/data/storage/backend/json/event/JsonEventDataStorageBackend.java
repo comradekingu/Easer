@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,6 +21,9 @@ package ryey.easer.core.data.storage.backend.json.event;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -28,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 import ryey.easer.core.data.EventStructure;
 import ryey.easer.core.data.storage.backend.EventDataStorageBackendInterface;
 import ryey.easer.core.data.storage.backend.FileDataStorageBackendHelper;
@@ -37,25 +40,20 @@ import ryey.easer.core.data.storage.backend.json.NC;
 
 public class JsonEventDataStorageBackend implements EventDataStorageBackendInterface {
 
-    private static JsonEventDataStorageBackend instance = null;
-    private static Context s_context = null;
+    private final Context context;
     private static File dir;
 
-    public static JsonEventDataStorageBackend getInstance(Context context) {
-        if (instance == null) {
-            if (context != null)
-                s_context = context;
-            dir = IOUtils.mustGetSubDir(s_context.getFilesDir(), "event");
-            instance = new JsonEventDataStorageBackend();
-        }
-        return instance;
+    public JsonEventDataStorageBackend(Context context) {
+        this.context = context;
+        dir = IOUtils.mustGetSubDir(context.getFilesDir(), "event");
     }
 
     @Override
-    public boolean has(String name) {
+    public boolean has(@NonNull String name) {
         return IOUtils.fileExists(dir, name + NC.SUFFIX);
     }
 
+    @NonNull
     @Override
     public List<String> list() {
         ArrayList<String> list = new ArrayList<>();
@@ -65,10 +63,15 @@ public class JsonEventDataStorageBackend implements EventDataStorageBackendInter
         return list;
     }
 
+    @Nullable
     @Override
-    public EventStructure get(String name) throws FileNotFoundException, IllegalStorageDataException {
+    public EventStructure get(@NonNull String name) throws IllegalStorageDataException {
         File file = new File(dir, name + NC.SUFFIX);
-        return get(file);
+        try {
+            return get(file);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     private EventStructure get(File file) throws FileNotFoundException, IllegalStorageDataException {
@@ -77,19 +80,20 @@ public class JsonEventDataStorageBackend implements EventDataStorageBackendInter
     }
 
     @Override
-    public void write(EventStructure profile) throws IOException {
+    public void write(@NonNull EventStructure profile) throws IOException {
         File file = new File(dir, profile.getName() + NC.SUFFIX);
         EventSerializer serializer = new EventSerializer();
         FileDataStorageBackendHelper.write(serializer, file, profile);
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(@NonNull String name) {
         File file = new File(dir, name + NC.SUFFIX);
         if (!file.delete())
             throw new IllegalStateException("Unable to delete " + file);
     }
 
+    @NonNull
     @Override
     public List<EventStructure> all() {
         List<EventStructure> list = new ArrayList<>();

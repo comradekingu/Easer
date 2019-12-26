@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -25,17 +25,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.recyclerview.extensions.ListAdapter;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,12 +34,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.Calendar;
 
 import ryey.easer.R;
-import ryey.easer.SettingsHelper;
+import ryey.easer.SettingsUtils;
 import ryey.easer.Utils;
 import ryey.easer.core.EHService;
 import ryey.easer.core.log.ActivityLog;
@@ -96,7 +97,8 @@ public class ActivityHistoryFragment extends Fragment {
     HistoryAdapter historyAdapter;
 
     boolean clearHistoryAfterBind = false;
-    ActivityLogService.ActivityLogServiceBinder serviceBinder;
+    @Nullable
+    private ActivityLogService.ActivityLogServiceBinder serviceBinder;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -167,7 +169,7 @@ public class ActivityHistoryFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.activity_history, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -175,6 +177,7 @@ public class ActivityHistoryFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_clear) {
+            //noinspection VariableNotUsedInsideIf
             if (serviceBinder == null)
                 clearHistoryAfterBind = true;
             else
@@ -251,7 +254,7 @@ public class ActivityHistoryFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(time);
             DateFormat df;
-            if (SettingsHelper.use12HourClock(context)) {
+            if (SettingsUtils.use12HourClock(context)) {
                 df = Utils.df_12hour;
             } else {
                 df = Utils.df_24hour;

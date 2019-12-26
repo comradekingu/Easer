@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,21 +19,32 @@
 
 package ryey.easer.core.data.storage;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import com.orhanobut.logger.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 import ryey.easer.core.data.Named;
 import ryey.easer.core.data.Verifiable;
 import ryey.easer.core.data.WithCreatedVersion;
 import ryey.easer.core.data.storage.backend.DataStorageBackendCommonInterface;
 
 public abstract class AbstractDataStorage<T extends Named & Verifiable & WithCreatedVersion, T_backend extends DataStorageBackendCommonInterface<T>> {
-    T_backend[] storage_backend_list;
 
+    protected final @NonNull Context context;
+    protected final @NonNull T_backend[] storage_backend_list;
+
+    protected AbstractDataStorage(@NonNull Context context, @NonNull T_backend[] storage_backend_list) {
+        this.context = context;
+        this.storage_backend_list = storage_backend_list;
+    }
+
+    @NonNull
     public List<String> list() {
         List<String> list = null;
         for (T_backend backend : storage_backend_list) {
@@ -45,7 +56,7 @@ public abstract class AbstractDataStorage<T extends Named & Verifiable & WithCre
         return list;
     }
 
-    public boolean has(String name) {
+    public boolean has(@NonNull String name) {
         for (T_backend backend : storage_backend_list) {
             if (backend.has(name))
                 return true;
@@ -53,17 +64,20 @@ public abstract class AbstractDataStorage<T extends Named & Verifiable & WithCre
         return false;
     }
 
-    public T get(String name) {
+    @NonNull
+    public T get(@NonNull String name) throws RequiredDataNotFoundException {
         for (T_backend backend : storage_backend_list) {
             try {
-                return backend.get(name);
+                T data = backend.get(name);
+                if (data != null)
+                    return data;
+                else
+                    Logger.v("data not found on backend <%s>", backend.getClass().getSimpleName());
             } catch (IllegalStorageDataException e) {
                 e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                Logger.v("data not found on backend <%s>", backend.getClass().getSimpleName());
             }
         }
-        return null;
+        throw new RequiredDataNotFoundException("data <%s> not found", name);
     }
 
     /**
@@ -80,10 +94,10 @@ public abstract class AbstractDataStorage<T extends Named & Verifiable & WithCre
                     if (existing_data.isValid())
                         return false;
                 } catch (IllegalStorageDataException ignored) {
+                    Logger.v("replace an invalid existing data (%s)", data.getName());
+                    backend.delete(data.getName());
+                    break;
                 }
-                Logger.v("replace an invalid existing data (%s)", data.getName());
-                backend.delete(data.getName());
-                break;
             }
         }
         storage_backend_list[0].write(data);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -51,7 +51,7 @@ class ServiceLog : BasicLog {
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        serviceName = parcel.readString()
+        serviceName = parcel.readString()!!
         start = parcel.readByte() > 0
     }
 

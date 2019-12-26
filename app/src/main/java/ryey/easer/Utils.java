@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -19,14 +19,11 @@
 
 package ryey.easer;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.ArraySet;
 import android.widget.CompoundButton;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArraySet;
 
 import com.orhanobut.logger.Logger;
 
@@ -34,9 +31,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -44,9 +39,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ryey.easer.commons.local_plugin.dynamics.SolidDynamicsAssignment;
+import ryey.easer.commons.local_skill.dynamics.SolidDynamicsAssignment;
+import ryey.easer.skills.operation.DynamicsEnabledString;
 
 public class Utils {
+
+    private Utils() {}
 
     public static void panic(String message, Object... objs) {
         Logger.e(message, objs);
@@ -61,6 +59,12 @@ public class Utils {
         if (str.trim().isEmpty())
             return true;
         return false;
+    }
+
+    public static boolean isBlank(@Nullable DynamicsEnabledString str) {
+        if (str == null)
+            return true;
+        return isBlank(str.str);
     }
 
     public static boolean nullableEqual(@Nullable Object obj1, @Nullable Object obj2) {
@@ -127,17 +131,6 @@ public class Utils {
         return list;
     }
 
-    public static boolean hasPermission(Context context, String permission) {
-        if (ContextCompat.checkSelfPermission(context, permission)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, String.format(
-                    context.getString(R.string.prompt_prevented_for_permission), permission),
-                    Toast.LENGTH_LONG).show();
-            return false;
-        } else
-            return true;
-    }
-
     public static int checkedIndexFirst(CompoundButton[] buttons) {
         for (int i = 0; i < buttons.length; i++) {
             if (buttons[i].isChecked())
@@ -148,22 +141,6 @@ public class Utils {
 
     public static final DateFormat df_24hour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     public static final DateFormat df_12hour = new SimpleDateFormat("yyyy-MM-dd h:mm:ss a", Locale.US);
-
-    private static final String F_DATE = "%DATE%";
-    private static final String F_TIME = "%TIME%";
-
-    private static final SimpleDateFormat sdf_date = new SimpleDateFormat("yyyy-MM-DD", Locale.US);
-    private static final SimpleDateFormat sdf_time = new SimpleDateFormat("HH-mm-ss", Locale.US);
-
-    public static String format(String format_string) {
-        if (format_string == null)
-            return null;
-        Date now = Calendar.getInstance().getTime();
-        String res = format_string;
-        res = res.replaceAll(F_DATE, sdf_date.format(now));
-        res = res.replaceAll(F_TIME, sdf_time.format(now));
-        return res;
-    }
 
     private static final String regex_placeholder = "<<[^ ]+>>";
     private static final Pattern pattern_placeholder = Pattern.compile(regex_placeholder);

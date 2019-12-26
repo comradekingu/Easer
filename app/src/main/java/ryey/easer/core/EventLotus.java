@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,20 +21,20 @@ package ryey.easer.core;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
-import java.util.concurrent.ExecutorService;
 
-import ryey.easer.SettingsHelper;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
-import ryey.easer.commons.local_plugin.eventplugin.EventPlugin;
-import ryey.easer.commons.local_plugin.eventplugin.Slot;
+import ryey.easer.SettingsUtils;
+import ryey.easer.commons.local_skill.eventskill.EventData;
+import ryey.easer.commons.local_skill.eventskill.EventSkill;
+import ryey.easer.commons.local_skill.eventskill.Slot;
 import ryey.easer.core.data.EventStructure;
-import ryey.easer.core.data.ScriptTree;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.core.data.LogicGraph;
+import ryey.easer.skills.LocalSkillRegistry;
 
 /*
  * Note: old document; may be outdated.
@@ -47,7 +47,7 @@ import ryey.easer.plugins.PluginRegistry;
  */
 class EventLotus extends Lotus {
 
-    private Slot mSlot;
+    private final Slot mSlot;
 
     private final long cooldownInMillisecond;
     private Calendar lastSatisfied;
@@ -55,25 +55,26 @@ class EventLotus extends Lotus {
     private final boolean repeatable;
     private final boolean persistent;
 
-    EventLotus(@NonNull Context context, @NonNull ScriptTree scriptTree, @NonNull ExecutorService executorService, @NonNull ConditionHolderService.CHBinder chBinder) {
-        super(context, scriptTree, executorService, chBinder);
+    EventLotus(@NonNull Context context, @NonNull LogicGraph.LogicNode node,
+               @NonNull CoreServiceComponents.LogicManager logicManager,
+               @NonNull AsyncHelper.DelayedLoadProfileJobs jobLP) {
+        super(context, node, logicManager, jobLP);
 
-        mSlot = nodeToSlot(scriptTree);
+        repeatable = script().isRepeatable();
+        persistent = script().isPersistent();
+        mSlot = eventToSlot(script().getEvent());
         mSlot.register(uri);
-        repeatable = scriptTree.isRepeatable();
-        persistent = scriptTree.isPersistent();
 
-        cooldownInMillisecond = SettingsHelper.coolDownInterval(context) * 1000;
+        cooldownInMillisecond = SettingsUtils.coolDownInterval(context) * 1000;
     }
 
-    private <T extends EventData> Slot<T> nodeToSlot(ScriptTree node) {
-        EventStructure scenario = node.getEvent();
+    private <T extends EventData> Slot<T> eventToSlot(EventStructure event) {
         Slot<T> slot;
         //noinspection unchecked
-        T data = (T) scenario.getEventData();
+        T data = (T) event.getEventData();
         //noinspection unchecked
-        EventPlugin<T> plugin = PluginRegistry.getInstance().event().findPlugin(data);
-        if (scenario.isTmpEvent()) {
+        EventSkill<T> plugin = LocalSkillRegistry.getInstance().event().findSkill(data);
+        if (event.isTmpEvent()) {
             slot = plugin.slot(context, data);
         } else {
             slot = plugin.slot(context, data, repeatable, persistent);
@@ -81,34 +82,12 @@ class EventLotus extends Lotus {
         return slot;
     }
 
-    private synchronized void check() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                mSlot.check();
-            }
-        });
-    }
-
     protected synchronized void onListen() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                mSlot.listen();
-                if (!SettingsHelper.passiveMode(context)) {
-                    check();
-                }
-            }
-        });
+        mSlot.listen();
     }
 
     protected synchronized void onCancel() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                mSlot.cancel();
-            }
-        });
+        mSlot.cancel();
     }
 
     private boolean checkAndSetCooldown(String eventName) {
@@ -130,7 +109,7 @@ class EventLotus extends Lotus {
     protected synchronized void onSatisfied(Bundle extras) {
         if (!repeatable && satisfied)
             return;
-        if (checkAndSetCooldown(scriptTree.getName())) {
+        if (checkAndSetCooldown(script().getName())) {
             super.onSatisfied(extras);
         }
     }
@@ -138,7 +117,7 @@ class EventLotus extends Lotus {
     protected synchronized void onUnsatisfied() {
         if (persistent && satisfied)
             return;
-        if (checkAndSetCooldown(scriptTree.getName())) {
+        if (checkAndSetCooldown(script().getName())) {
             super.onUnsatisfied();
         }
     }

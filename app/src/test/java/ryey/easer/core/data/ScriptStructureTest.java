@@ -19,13 +19,17 @@
 
 package ryey.easer.core.data;
 
+import androidx.collection.ArraySet;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import ryey.easer.commons.C;
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
-import ryey.easer.plugins.event.wifi.WifiEventPlugin;
+import ryey.easer.commons.local_skill.eventskill.EventData;
+import ryey.easer.skills.usource.wifi.WifiUSourceSkill;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +46,7 @@ public class ScriptStructureTest {
 
     @BeforeClass
     public static void setUpAll() {
-        eventData = new WifiEventPlugin().dataFactory().dummyData();
+        eventData = new WifiUSourceSkill().dataFactory().dummyData();
         scenario = new EventStructure(C.VERSION_CREATED_IN_RUNTIME, "myScenario", eventData);
     }
 
@@ -69,9 +73,10 @@ public class ScriptStructureTest {
 
     @Test
     public void setAndGetParentName() throws Exception {
-        assertEquals(scriptStructure.getParentName(), null);
-        scriptStructure.setParentName(parentName);
-        assertEquals(scriptStructure.getParentName(), parentName);
+        assertEquals(scriptStructure.getPredecessors().size(), 0);
+        scriptStructure.setPredecessors(new ArraySet<>(Arrays.asList(parentName)));
+        assertEquals(scriptStructure.getPredecessors().size(), 1);
+        assertTrue(scriptStructure.getPredecessors().contains(parentName));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -20,33 +20,41 @@
 package ryey.easer.core;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
-import java.util.concurrent.ExecutorService;
+import androidx.annotation.NonNull;
 
 import ryey.easer.core.data.ConditionStructure;
-import ryey.easer.core.data.ScriptTree;
+import ryey.easer.core.data.LogicGraph;
 
 class ConditionLotus extends Lotus {
+
+    @NonNull protected final CoreServiceComponents.DelayedConditionHolderBinderJobs jobCH;
+
     private final ConditionStructure conditionStructure;
 
-    ConditionLotus(@NonNull Context context, @NonNull ScriptTree scriptTree, @NonNull ExecutorService executorService, @NonNull ConditionHolderService.CHBinder chBinder) {
-        super(context, scriptTree, executorService, chBinder);
-        conditionStructure = scriptTree.getCondition();
+    ConditionLotus(@NonNull Context context, @NonNull LogicGraph.LogicNode node,
+                   @NonNull CoreServiceComponents.LogicManager logicManager,
+                   @NonNull CoreServiceComponents.DelayedConditionHolderBinderJobs jobCH,
+                   @NonNull AsyncHelper.DelayedLoadProfileJobs jobLP) {
+        super(context, node, logicManager, jobLP);
+        this.jobCH = jobCH;
+        conditionStructure = script().getCondition();
     }
 
     @Override
     protected void onListen() {
-        chBinder.registerAssociation(conditionStructure.getName(), uri);
-        Boolean state = chBinder.conditionState(conditionStructure.getName());
-        if (state == null) {
-        } else {
-            onStateSignal(state);
-        }
+        jobCH.doAfter(binder -> {
+            binder.registerAssociation(conditionStructure.getName(), uri);
+            Boolean state = binder.conditionState(conditionStructure.getName());
+            if (state == null) {
+            } else {
+                onStateSignal(state);
+            }
+        });
     }
 
     @Override
     protected void onCancel() {
-        chBinder.unregisterAssociation(conditionStructure.getName(), uri);
+        jobCH.doAfter(binder -> binder.unregisterAssociation(conditionStructure.getName(), uri));
     }
 }

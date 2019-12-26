@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,6 +21,9 @@ package ryey.easer.core.data.storage.backend.json.condition;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
@@ -28,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
 import ryey.easer.core.data.ConditionStructure;
 import ryey.easer.core.data.storage.backend.ConditionDataStorageBackendInterface;
 import ryey.easer.core.data.storage.backend.FileDataStorageBackendHelper;
@@ -37,28 +40,20 @@ import ryey.easer.core.data.storage.backend.json.NC;
 
 public class JsonConditionDataStorageBackend implements ConditionDataStorageBackendInterface {
 
-    private static JsonConditionDataStorageBackend instance = null;
-    private static Context context = null;
+    private final Context context;
     private static File dir;
 
-    public static JsonConditionDataStorageBackend getInstance(Context context) {
-        if (instance == null) {
-            if (context != null)
-                JsonConditionDataStorageBackend.context = context;
-            dir = IOUtils.mustGetSubDir(JsonConditionDataStorageBackend.context.getFilesDir(), "condition");
-            instance = new JsonConditionDataStorageBackend();
-        }
-        return instance;
-    }
-
-    private JsonConditionDataStorageBackend() {
+    public JsonConditionDataStorageBackend(Context context) {
+        this.context = context;
+        dir = IOUtils.mustGetSubDir(context.getFilesDir(), "condition");
     }
 
     @Override
-    public boolean has(String name) {
+    public boolean has(@NonNull String name) {
         return IOUtils.fileExists(dir, name + NC.SUFFIX);
     }
 
+    @NonNull
     @Override
     public List<String> list() {
         ArrayList<String> list = new ArrayList<>();
@@ -68,10 +63,15 @@ public class JsonConditionDataStorageBackend implements ConditionDataStorageBack
         return list;
     }
 
+    @Nullable
     @Override
-    public ConditionStructure get(String name) throws FileNotFoundException, IllegalStorageDataException {
+    public ConditionStructure get(@NonNull String name) throws IllegalStorageDataException {
         File file = new File(dir, name + NC.SUFFIX);
-        return get(file);
+        try {
+            return get(file);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     private ConditionStructure get(File file) throws FileNotFoundException, IllegalStorageDataException {
@@ -80,19 +80,20 @@ public class JsonConditionDataStorageBackend implements ConditionDataStorageBack
     }
 
     @Override
-    public void write(ConditionStructure data) throws IOException {
+    public void write(@NonNull ConditionStructure data) throws IOException {
         File file = new File(dir, data.getName() + NC.SUFFIX);
         ConditionSerializer serializer = new ConditionSerializer();
         FileDataStorageBackendHelper.write(serializer, file, data);
     }
 
     @Override
-    public void delete(String name) {
+    public void delete(@NonNull String name) {
         File file = new File(dir, name + NC.SUFFIX);
         if (!file.delete())
             throw new IllegalStateException("Unable to delete " + file);
     }
 
+    @NonNull
     @Override
     public List<ConditionStructure> all() {
         List<ConditionStructure> list = new ArrayList<>();

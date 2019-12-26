@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -20,22 +20,22 @@
 package ryey.easer.core.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.orhanobut.logger.Logger;
 
-import java.util.List;
-
 import ryey.easer.R;
-import ryey.easer.SettingsHelper;
-import ryey.easer.commons.local_plugin.PluginDef;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.SettingsUtils;
+import ryey.easer.commons.local_skill.Skill;
+import ryey.easer.core.ui.setting.SettingsActivity;
+import ryey.easer.skills.LocalSkillRegistry;
 
 public class PermissionOutlineFragment extends Fragment {
 
@@ -66,7 +66,7 @@ public class PermissionOutlineFragment extends Fragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestAllPermissions();
+                SettingsActivity.callSkillSettings(getActivity());
             }
         });
     }
@@ -82,11 +82,11 @@ public class PermissionOutlineFragment extends Fragment {
     }
 
     boolean hasAllRequiredPermissions() {
-        final boolean logging = SettingsHelper.logging(getContext());
+        final boolean logging = SettingsUtils.logging(getContext());
         boolean satisfied = true;
-        for (Object obj_plugin : PluginRegistry.getInstance().all().getEnabledPlugins(getContext())) {
-            PluginDef plugin = (PluginDef) obj_plugin;
-            if (!plugin.checkPermissions(getContext())) {
+        for (Object obj_plugin : LocalSkillRegistry.getInstance().all().getEnabledSkills(getContext())) {
+            Skill plugin = (Skill) obj_plugin;
+            if (plugin.checkPermissions(getContext()) == Boolean.FALSE) {
                 Logger.d("Permission for plugin <%s> not satisfied", plugin.id());
                 if (!logging)
                     return false;
@@ -94,14 +94,5 @@ public class PermissionOutlineFragment extends Fragment {
             }
         }
         return satisfied;
-    }
-
-    void requestAllPermissions() {
-        List plugins = PluginRegistry.getInstance().all().getEnabledPlugins(getContext());
-        for (int i = 0; i < plugins.size(); i++) {
-            PluginDef plugin = (PluginDef) plugins.get(i);
-            if (!plugin.checkPermissions(getContext()))
-                plugin.requestPermissions(getActivity(), i);
-        }
     }
 }

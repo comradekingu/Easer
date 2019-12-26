@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -38,11 +38,11 @@ class RemoteOperationPluginInfo(packageName: String, pluginId: String,
             })
 
     constructor(parcel: Parcel) : this(
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
             parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
+            parcel.readString()!!)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(packageName)

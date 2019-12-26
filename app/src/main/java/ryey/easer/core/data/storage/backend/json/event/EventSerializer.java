@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -22,13 +22,13 @@ package ryey.easer.core.data.storage.backend.json.event;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ryey.easer.commons.local_plugin.eventplugin.EventData;
+import ryey.easer.commons.local_skill.eventskill.EventData;
 import ryey.easer.core.data.EventStructure;
 import ryey.easer.core.data.storage.C;
 import ryey.easer.core.data.storage.backend.Serializer;
 import ryey.easer.core.data.storage.backend.UnableToSerializeException;
 import ryey.easer.plugin.PluginDataFormat;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.skills.LocalSkillRegistry;
 
 public class EventSerializer implements Serializer<EventStructure> {
     @Override
@@ -48,7 +48,7 @@ public class EventSerializer implements Serializer<EventStructure> {
 
     private static JSONObject serialize_situation(EventData event) throws JSONException {
         JSONObject json_situation = new JSONObject();
-        json_situation.put(C.SPEC, PluginRegistry.getInstance().event().findPlugin(event).id());
+        json_situation.put(C.SPEC, LocalSkillRegistry.getInstance().event().findSkill(event).id());
         json_situation.put(C.DATA, event.serialize(PluginDataFormat.JSON));
         return json_situation;
     }

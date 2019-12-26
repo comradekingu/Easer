@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -25,14 +25,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ryey.easer.commons.local_plugin.IllegalStorageDataException;
-import ryey.easer.commons.local_plugin.conditionplugin.ConditionData;
+import ryey.easer.commons.local_skill.IllegalStorageDataException;
+import ryey.easer.commons.local_skill.conditionskill.ConditionData;
+import ryey.easer.commons.local_skill.conditionskill.ConditionSkill;
 import ryey.easer.core.data.ConditionStructure;
 import ryey.easer.core.data.storage.C;
 import ryey.easer.core.data.storage.backend.IOUtils;
 import ryey.easer.core.data.storage.backend.Parser;
 import ryey.easer.plugin.PluginDataFormat;
-import ryey.easer.plugins.PluginRegistry;
+import ryey.easer.skills.LocalSkillRegistry;
 
 public class ConditionParser implements Parser<ConditionStructure> {
     @Override
@@ -51,8 +52,10 @@ public class ConditionParser implements Parser<ConditionStructure> {
 
     private static ConditionData parse_condition(JSONObject json_condition, int version) throws JSONException, IllegalStorageDataException {
         String spec = json_condition.getString(C.SPEC);
-        return PluginRegistry.getInstance().condition().findPlugin(spec)
-                .dataFactory()
+        ConditionSkill<?> plugin = LocalSkillRegistry.getInstance().condition().findSkill(spec);
+        if (plugin == null)
+            throw new IllegalStorageDataException("Condition skill not found");
+        return plugin.dataFactory()
                 .parse(json_condition.getString(C.DATA), PluginDataFormat.JSON, version);
     }
 }

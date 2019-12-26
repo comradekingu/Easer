@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2018 Rui Zhao <renyuneyun@gmail.com>
+ * Copyright (c) 2016 - 2019 Rui Zhao <renyuneyun@gmail.com>
  *
  * This file is part of Easer.
  *
@@ -21,27 +21,45 @@ package ryey.easer;
 
 import android.Manifest;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.DiskLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.zeugmasolutions.localehelper.LocaleHelperApplicationDelegate;
 
-import ryey.easer.core.ProfileLoaderService;
-import ryey.easer.core.RemotePluginRegistryService;
+import org.acra.ACRA;
+import org.acra.annotation.AcraCore;
+import org.acra.annotation.AcraToast;
+
+import java.io.File;
+
 import ryey.easer.core.log.ActivityLogService;
 
+@AcraCore(buildConfigClass = BuildConfig.class,
+        reportSenderFactoryClasses = ErrorSenderFactory.class)
+@AcraToast(resText=R.string.prompt_error_logged)
 public class EaserApplication extends Application {
+
+    static final String LOG_DIR = new File(Environment.getExternalStorageDirectory(), "/logger/error").getAbsolutePath();
+
+    private final LocaleHelperApplicationDelegate localeAppDelegate = new LocaleHelperApplicationDelegate();
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         Logger.addLogAdapter(new AndroidLogAdapter());
 
-        if (SettingsHelper.logging(this)) {
+        if (SettingsUtils.logging(this)) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Logger.addLogAdapter(new DiskLogAdapter());
@@ -53,9 +71,19 @@ public class EaserApplication extends Application {
         }
 
         startService(new Intent(this, ActivityLogService.class));
-        startService(new Intent(this, ProfileLoaderService.class));
-        startService(new Intent(this, RemotePluginRegistryService.class));
 
         Logger.log(Logger.ASSERT, null, "======Easer started======", null);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        localeAppDelegate.onConfigurationChanged(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(localeAppDelegate.attachBaseContext(base));
+        ACRA.init(this);
     }
 }
